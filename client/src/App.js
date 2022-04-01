@@ -13,7 +13,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="App">
+    <div>
       <Title>Hello World!</Title>
     </div>
   );
