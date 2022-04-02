@@ -1,6 +1,8 @@
 .ONESHELL:
 .PHONY: all purge clean run test coverage
 
+CAPTURE ?= true
+
 all: virtualenv
 
 virtualenv:
@@ -14,10 +16,14 @@ purge: clean
 	-rm -r virtualenv
 
 clean:
-	-rm -r app/__pycache__
-	-rm -r tests/__pycache__
-	-rm -r .pytest_cache
 	-rm .coverage
+	-find . -path ./virtualenv -prune \
+		-o -type d -name __pycache__ -print \
+		-o -type d -name .pytest_cache -print \
+	| while read line; do \
+		echo Removing: "$$line";
+		rm -r -- "$$line";
+	done
 
 run:
 	. virtualenv/bin/activate
@@ -25,7 +31,11 @@ run:
 
 test:
 	. virtualenv/bin/activate
-	coverage run -m pytest tests
+	if [ $(CAPTURE) = false ]; then
+		coverage run -m pytest -s tests
+	else
+		coverage run -m pytest tests
+	fi
 
 coverage:
 	. virtualenv/bin/activate

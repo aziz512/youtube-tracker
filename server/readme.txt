@@ -3,9 +3,8 @@ Installing dependencies:
 		make all // also sets up virtualenv
 
 	Windows:
-		pip install flask
-		pip install pytest
-		pip install coverage
+		Read the "virtualenv" rule in the makefile for
+		a list of dependencies to install using pip
 
 Running:
 	Linux:
