@@ -11,6 +11,7 @@ virtualenv:
 	pip install flask
 	pip install pytest
 	pip install coverage
+	pip install feedparser
 
 purge: clean
 	-rm -r virtualenv
