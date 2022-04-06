@@ -6,7 +6,7 @@ CAPTURE ?= true
 all: virtualenv
 
 virtualenv:
-	python -m venv virtualenv
+	virtualenv virtualenv
 	. virtualenv/bin/activate
 	pip install flask
 	pip install pytest
