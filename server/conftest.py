@@ -16,8 +16,5 @@ def feed():
 	"""
 	Test data is from the official Youtube channel
 	https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ
-
-	This channel features videos from other channels as well as their
-	own. This makes it useful for testing edge cases.
 	"""
 	return feedparser.parse('tests/testdata/rss_feed.txt')
