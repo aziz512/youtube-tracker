@@ -1,3 +1,5 @@
+import os.path
+
 class Watchlist:
 	@staticmethod
 	def parse_watchlist(file_path):
@@ -18,3 +20,11 @@ class Watchlist:
 	def __iter__(self):
 		for id in self.channel_ids:
 			yield id
+
+def create_if_not_exist(file_path):
+	if not os.path.exists(file_path):
+		with open(file_path, 'w') as file:
+			file.write("# watchlist format: youtube channel_id per line\n")
+			file.write("# comments are ignored")
+	elif os.path.isdir(file_path):
+		raise IsADirectoryError("watchlist must be a file")

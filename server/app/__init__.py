@@ -1,14 +1,16 @@
 from flask import Flask
+from . import watchlist
 from . import routes
 
-def create_app(watchlist=None):
+def create_app(rss_watchlist=None):
 	app = Flask(__name__)
 
-	# watchlist is a path to a file
-	if watchlist is None:
+	# rss_watchlist is a path to a file
+	if rss_watchlist is None:
 		app.config['watchlist'] = 'watchlist'
 	else:
-		app.config['watchlist'] = watchlist
+		app.config['watchlist'] = rss_watchlist
+	watchlist.create_if_not_exist(app.config['watchlist'])
 
 	routes.add_routes(app)
 	return app
