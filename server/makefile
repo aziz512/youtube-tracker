@@ -40,4 +40,4 @@ test:
 
 coverage:
 	. virtualenv/bin/activate
-	coverage report -m
+	coverage report -m --omit 'tests/*'
