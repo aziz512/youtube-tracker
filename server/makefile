@@ -1,7 +1,12 @@
 .ONESHELL:
 .PHONY: all purge clean run test coverage
 
+# Set CAPTURE to false to see print statments for tests
 CAPTURE ?= true
+
+# Set FETCH_TEST to true to run tests that connect to the internet.
+# This needs to be true for accurate coverage reports
+FETCH_TEST ?= false
 
 all: virtualenv
 

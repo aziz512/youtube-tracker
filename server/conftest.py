@@ -2,6 +2,7 @@ import pytest
 import feedparser
 from app import create_app
 from app.watchlist import Watchlist
+from app import rss
 
 @pytest.fixture()
 def app():
@@ -18,7 +19,7 @@ def feed():
 	Test data is from the official Youtube channel
 	https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ
 	"""
-	return feedparser.parse('tests/testdata/rss_feed.txt')
+	return rss.from_file('tests/testdata/rss_feed.txt')
 
 @pytest.fixture()
 def watchlist(app):
