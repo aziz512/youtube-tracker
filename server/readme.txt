@@ -12,3 +12,6 @@ Running:
 
 	Windows:
 		flask run
+
+Todo:
+	handle all comments with [TODO] in them
