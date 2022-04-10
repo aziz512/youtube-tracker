@@ -1,6 +1,7 @@
 import pytest
 import feedparser
 from app import create_app
+from app.watchlist import Watchlist
 
 @pytest.fixture()
 def app():
@@ -18,3 +19,7 @@ def feed():
 	https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ
 	"""
 	return feedparser.parse('tests/testdata/rss_feed.txt')
+
+@pytest.fixture()
+def watchlist():
+	return Watchlist('tests/testdata/watchlist')
