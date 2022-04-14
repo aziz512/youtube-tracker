@@ -17,11 +17,15 @@ def test_get_rss_feed(watchlist):
 	]
 	assert invidious_feed == list(map(lambda x: get_rss_url(x, source='Invidious'), watchlist))
 
-def test_get_feed_data(feed):
-	url = 'https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ'
-	assert feed['feed']['title'] == 'YouTube'
-	assert feed['feed']['author'] == 'YouTube'
-	assert feed['feed']['link'] == url
+def test_get_feed_data(youtube_feed, invidious_feed):
+	feeds = [
+		( youtube_feed, 'https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ' ),
+		( invidious_feed, 'https://vid.puffyan.us/channel/UCBR8-60-B28hp2BmDPdntcQ' ),
+	]
+	for feed, url in feeds:
+		assert feed['feed']['title'] == 'YouTube'
+		assert feed['feed']['author'] == 'YouTube'
+		assert feed['feed']['link'] == url
 
 def test_from_channel_id():
 	if os.getenv('FETCH_TEST') != 'true': return
