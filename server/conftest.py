@@ -19,7 +19,7 @@ def feed():
 	Test data is from the official Youtube channel
 	https://www.youtube.com/feeds/videos.xml?channel_id=UCBR8-60-B28hp2BmDPdntcQ
 	"""
-	return rss.from_file('tests/testdata/rss_feed.txt')
+	return rss.from_file('tests/testdata/rss_feed.xml')
 
 @pytest.fixture()
 def watchlist(app):
