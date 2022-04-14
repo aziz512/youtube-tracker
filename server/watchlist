@@ -1,13 +1,14 @@
-# Example watchlist
-# Comments and blank lines are ignored
-# Channel_id must be on a line by itself
-# No comments on the same line as channel_id
+; Example watchlist
+; Section name can be anything you want
+; Value "id" is mandatory
+; Values "source" and "site" are optional
 
-# Youtube
-UCBR8-60-B28hp2BmDPdntcQ
+; Available options
+; source = youtube|invidious
+; site = <domain name>
 
-# Fireship
-UCsBjURrPoezykLs9EqgamOA
+[Youtube]
+id = UCBR8-60-B28hp2BmDPdntcQ
+source = invidious
+site = inv.riverside.rocks
 
-# 3Blue1Brown
-UCYO_jab_esuFRV4b17AJtAw

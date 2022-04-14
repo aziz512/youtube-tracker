@@ -8,7 +8,7 @@ def test_watchlist(watchlist):
 		'UCsBjURrPoezykLs9EqgamOA',
 		'UCYO_jab_esuFRV4b17AJtAw',
 	]
-	assert correct_list == list(watchlist)
+	assert correct_list == list(map(lambda x: x['id'], watchlist))
 
 def test_create_if_not_exist():
 	path = 'tests/testdir/watchlist'

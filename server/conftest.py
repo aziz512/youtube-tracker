@@ -6,7 +6,7 @@ from app import rss
 
 @pytest.fixture()
 def app():
-	app = create_app(rss_watchlist='tests/testdata/watchlist')
+	app = create_app(rss_watchlist='tests/testdata/watchlist.ini')
 	return app
 
 @pytest.fixture()
