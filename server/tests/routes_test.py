@@ -5,11 +5,11 @@ def test_hello_world(client):
 	response = client.get("/hello_world")
 	assert response.data == b'Hello World!'
 
-def test_videos(client):
+def test_videos_raw(client):
 	# [TODO] REMOVE this line after caching is implemented
 	if os.getenv('FETCH_TEST') != 'true': return
 
-	response = client.get('/videos')
+	response = client.get('/videos_raw')
 	data = json.loads(response.data)
 	youtube, fireship, three_blue = list(map(lambda x: x['feed'], data))
 	assert youtube['title'] == 'YouTube'

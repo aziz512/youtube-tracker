@@ -6,6 +6,6 @@ def add_routes(app):
 	def hello_world():
 		return 'Hello World!'
 
-	@app.route('/videos')
-	def videos():
+	@app.route('/videos_raw')
+	def videos_raw():
 		return jsonify(rss.summery(app.config['watchlist']))
