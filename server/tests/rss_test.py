@@ -10,6 +10,13 @@ def test_get_rss_feed(watchlist):
 	]
 	assert feed == list(map(get_rss_url, watchlist))
 
+	invidious_feed = [
+		'https://vid.puffyan.us/feed/channel/UCBR8-60-B28hp2BmDPdntcQ',
+		'https://vid.puffyan.us/feed/channel/UCsBjURrPoezykLs9EqgamOA',
+		'https://vid.puffyan.us/feed/channel/UCYO_jab_esuFRV4b17AJtAw',
+	]
+	assert invidious_feed == list(map(lambda x: get_rss_url(x, source='Invidious'), watchlist))
+
 def test_get_feed_data(feed):
 	url = 'https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ'
 	assert feed['feed']['title'] == 'YouTube'
