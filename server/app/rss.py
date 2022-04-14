@@ -2,17 +2,18 @@ import feedparser
 from .watchlist import Watchlist
 
 rss_url_formats = {
-	'Youtube': {
+	'youtube': {
 		'template': 'https://{}/feeds/videos.xml?channel_id={}',
 		'default_site': 'www.youtube.com',
 	},
-	'Invidious': {
+	'invidious': {
 		'template': 'https://{}/feed/channel/{}',
 		'default_site': 'vid.puffyan.us',
 	},
 }
 
-def get_rss_url(channel_id, source='Youtube', site=None):
+def get_rss_url(channel_id, source='youtube', site=None):
+	source = source.lower()
 	if site is None:
 		site = rss_url_formats[source]['default_site']
 	return rss_url_formats[source]['template'].format(site, channel_id)
