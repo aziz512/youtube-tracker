@@ -26,3 +26,14 @@ def test_create_if_not_exist():
 	except Exception as e:
 		assert isinstance(e, IsADirectoryError)
 	os.rmdir(path)
+
+def test_borked_watchlist(borked_watchlist):
+	# only one valid entry
+	assert borked_watchlist.channels == [
+		{
+			'name': 'Fireship',
+			'id': 'UCsBjURrPoezykLs9EqgamOA',
+			'source': 'youtube',
+			'site': 'www.youtube.com',
+		}
+	]

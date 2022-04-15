@@ -23,6 +23,7 @@ def test_get_feed_data(youtube_feed, invidious_feed):
 def test_from_watchlist_item(watchlist):
 	if os.getenv('FETCH_TEST') != 'true': return
 	item = {
+		'name': 'Youtube',
 		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
 		'source': 'youtube',
 		'site': 'www.youtube.com',

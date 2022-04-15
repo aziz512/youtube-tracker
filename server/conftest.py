@@ -32,3 +32,7 @@ def invidious_feed():
 @pytest.fixture()
 def watchlist(app):
 	return Watchlist(app.config['watchlist'])
+
+@pytest.fixture()
+def borked_watchlist():
+	return Watchlist('tests/testdata/borked_watchlist.ini')
