@@ -63,8 +63,6 @@ class Watchlist:
 			config = ConfigParser()
 			config['Youtube'] = {
 				'id': 'UCBR8-60-B28hp2BmDPdntcQ',
-				'source': 'invidious',
-				'site': 'inv.riverside.rocks',
 			}
 			with open(file_path, 'w') as file:
 				comments = [
