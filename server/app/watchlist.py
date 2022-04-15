@@ -15,6 +15,7 @@ url_formats = {
 
 class Watchlist:
 	def __init__(self, file_path):
+		self.__is_invalid = False
 		parser = ConfigParser()
 		parser.read(file_path)
 		channels = []
@@ -22,6 +23,7 @@ class Watchlist:
 			entry = parser[section]
 
 			if 'id' not in entry:
+				self.__is_invalid = True
 				continue
 			id = entry['id']
 
@@ -31,6 +33,7 @@ class Watchlist:
 				source = entry['source'].lower()
 
 			if source not in url_formats:
+				self.__is_invalid = True
 				print(source, 'not found in url_formats', file=stderr)
 				continue
 
@@ -50,6 +53,9 @@ class Watchlist:
 	def __iter__(self):
 		for channel in self.channels:
 			yield channel
+
+	def is_invalid(self):
+		return self.__is_invalid
 
 	@staticmethod
 	def create_if_not_exist(file_path):

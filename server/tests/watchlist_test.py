@@ -37,3 +37,7 @@ def test_borked_watchlist(borked_watchlist):
 			'site': 'www.youtube.com',
 		}
 	]
+
+def test_is_invalid(watchlist, borked_watchlist):
+	assert watchlist.is_invalid() is False
+	assert borked_watchlist.is_invalid() is True
