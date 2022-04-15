@@ -7,7 +7,7 @@ def create_app(rss_watchlist=None):
 
 	# rss_watchlist is a path to a file
 	if rss_watchlist is None: # pragma: no cover
-		app.config['watchlist'] = 'watchlist'
+		app.config['watchlist'] = 'watchlist.ini'
 	else:
 		app.config['watchlist'] = rss_watchlist
 	watchlist.Watchlist.create_if_not_exist(app.config['watchlist'])
