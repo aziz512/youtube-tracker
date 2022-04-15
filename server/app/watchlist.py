@@ -14,8 +14,7 @@ url_formats = {
 }
 
 class Watchlist:
-	@staticmethod
-	def parse_watchlist(file_path):
+	def __init__(self, file_path):
 		parser = ConfigParser()
 		parser.read(file_path)
 		channels = []
@@ -46,37 +45,35 @@ class Watchlist:
 			channel['source'] = source
 			channel['site'] = site
 			channels.append(channel)
-		return channels
-
-	def __init__(self, file_path):
-		self.channels = self.parse_watchlist(file_path)
+		self.channels = channels
 
 	def __iter__(self):
 		for channel in self.channels:
 			yield channel
 
-def create_if_not_exist(file_path):
-	if not os.path.exists(file_path):
-		config = ConfigParser()
-		config['Youtube'] = {
-			'id': 'UCBR8-60-B28hp2BmDPdntcQ',
-			'source': 'invidious',
-			'site': 'inv.riverside.rocks',
-		}
-		with open(file_path, 'w') as file:
-			comments = [
-				'; Example watchlist',
-				'; Section name can be anything you want',
-				'; Value "id" is mandatory',
-				'; Values "source" and "site" are optional',
-				'',
-				'; Available options',
-				'; source = youtube|invidious',
-				'; site = <domain name>',
-				'',
-				'',
-			]
-			file.write('\n'.join(comments))
-			config.write(file)
-	elif os.path.isdir(file_path):
-		raise IsADirectoryError("watchlist must be a file")
+	@staticmethod
+	def create_if_not_exist(file_path):
+		if not os.path.exists(file_path):
+			config = ConfigParser()
+			config['Youtube'] = {
+				'id': 'UCBR8-60-B28hp2BmDPdntcQ',
+				'source': 'invidious',
+				'site': 'inv.riverside.rocks',
+			}
+			with open(file_path, 'w') as file:
+				comments = [
+					'; Example watchlist',
+					'; Section name can be anything you want',
+					'; Value "id" is mandatory',
+					'; Values "source" and "site" are optional',
+					'',
+					'; Available options',
+					'; source = youtube|invidious',
+					'; site = <domain name>',
+					'',
+					'',
+				]
+				file.write('\n'.join(comments))
+				config.write(file)
+		elif os.path.isdir(file_path):
+			raise IsADirectoryError("watchlist must be a file")

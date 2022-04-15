@@ -10,7 +10,7 @@ def create_app(rss_watchlist=None):
 		app.config['watchlist'] = 'watchlist'
 	else:
 		app.config['watchlist'] = rss_watchlist
-	watchlist.create_if_not_exist(app.config['watchlist'])
+	watchlist.Watchlist.create_if_not_exist(app.config['watchlist'])
 
 	routes.add_routes(app)
 	return app

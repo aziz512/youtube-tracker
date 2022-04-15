@@ -1,6 +1,6 @@
 import os
 import unittest
-from app.watchlist import create_if_not_exist
+from app.watchlist import Watchlist
 
 def test_watchlist(watchlist):
 	correct_list = [
@@ -17,12 +17,12 @@ def test_create_if_not_exist():
 			os.rmdir(path)
 		else:
 			os.remove(path)
-	create_if_not_exist(path)
+	Watchlist.create_if_not_exist(path)
 	assert os.path.exists(path)
 	os.remove(path)
 	os.mkdir(path)
 	try:
-		create_if_not_exist(path)
+		Watchlist.create_if_not_exist(path)
 	except Exception as e:
 		assert isinstance(e, IsADirectoryError)
 	os.rmdir(path)
