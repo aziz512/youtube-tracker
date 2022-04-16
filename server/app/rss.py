@@ -30,7 +30,7 @@ def _flatten(summery, feed, summery_key, feed_path, optional=False):
 		cursor = cursor[feed_key]
 	summery[summery_key] = cursor
 
-def summarize(feed, raise_error=False):
+def summarize_feed(feed, raise_error=False):
 	summery = {}
 	def reword(summery_key, feed_path, optional=False):
 		_flatten(summery, feed, summery_key, feed_path, optional=optional)
@@ -51,6 +51,6 @@ def summarize(feed, raise_error=False):
 def summerize_watchlist(watchlist_path):
 	watchlist = Watchlist(watchlist_path)
 	feeds = map(from_watchlist_item,watchlist)
-	summaries = [ feed for feed in map(summarize, feeds)
+	summaries = [ feed for feed in map(summarize_feed, feeds)
 				if feed is not None ]
 	return summaries

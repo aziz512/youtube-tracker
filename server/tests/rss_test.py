@@ -1,7 +1,7 @@
 import os
 from app.rss import get_rss_url
 from app.rss import from_watchlist_item
-from app.rss import summarize
+from app.rss import summarize_feed
 
 def test_get_rss_feed(watchlist):
 	feed = [
@@ -35,21 +35,21 @@ def test_from_watchlist_item(watchlist):
 	assert feed['feed']['author'] == 'YouTube'
 	assert feed['feed']['link'] == url
 
-def test_summarize(youtube_feed, invidious_feed):
+def test_summarize_feed(youtube_feed, invidious_feed):
 	feeds = (
 		( youtube_feed, 'https://www.youtube.com/channel/UCBR8-60-B28hp2BmDPdntcQ' ),
 		( invidious_feed, 'https://vid.puffyan.us/channel/UCBR8-60-B28hp2BmDPdntcQ' ),
 	)
 	for feed, url in feeds:
-		summary = summarize(feed, raise_error=True)
+		summary = summarize_feed(feed, raise_error=True)
 		assert summary['title'] == 'YouTube'
 		assert summary['author'] == 'YouTube'
 		assert summary['channel_id'] == 'UCBR8-60-B28hp2BmDPdntcQ'
 		assert summary['channel_url'] == url
 
-def test_summarize_borked(borked_feed):
+def test_summarize_feed_borked(borked_feed):
 	try:
-		summarize(borked_feed, raise_error=True)
+		summarize_feed(borked_feed, raise_error=True)
 	except ValueError:
 		pass
-	assert summarize(borked_feed) is None
+	assert summarize_feed(borked_feed) is None
