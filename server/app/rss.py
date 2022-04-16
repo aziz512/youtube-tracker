@@ -18,35 +18,44 @@ def raw_feed(watchlist_path):
 	feeds = list(map(from_watchlist_item, watchlist))
 	return feeds
 
-def _flatten(summery, feed, summery_key, feed_path, optional=False):
+def _assign_path(dic, path, item):
+	cursor = dic
+	for key in path[:-1]:
+		if key in cursor:
+			cursor = cursor[key]
+		else:
+			cursor[key] = {}
+			cursor = cursor[key]
+	cursor[path[-1]] = item
+
+def _flatten(summary, feed, summary_path, feed_path, optional=False):
 	cursor = feed
 	for feed_key in feed_path:
 		is_correct_type = isinstance(cursor, list) or isinstance(cursor, dict)
 		if not is_correct_type or feed_key not in cursor:
 			if not optional:
 				raise ValueError('invalid rss feed')
-			summery[summery_key] = None
+			_assign_path(summary, summary_path, None)
 			return
 		cursor = cursor[feed_key]
-	summery[summery_key] = cursor
+	_assign_path(summary, summary_path, cursor)
 
 def summarize_feed(feed, raise_error=False):
-	summery = {}
-	def reword(summery_key, feed_path, optional=False):
-		_flatten(summery, feed, summery_key, feed_path, optional=optional)
+	summary = {}
+	def reword(summary_path, feed_path, optional=False):
+		_flatten(summary, feed, summary_path, feed_path, optional=optional)
 
 	try:
 		if feed.get('bozo', None) is not False:
 			raise ValueError('invalid rss feed')
-		reword('title', ('feed', 'title'))
-		reword('author', ('feed', 'author'))
-		reword('channel_id', ('feed', 'yt_channelid'))
-		reword('channel_url', ('feed', 'href'))
+		reword(('channel', 'name'), ('feed', 'title'))
+		reword(('channel', 'id')  , ('feed', 'yt_channelid'))
+		reword(('channel', 'url') , ('feed', 'href'))
 	except ValueError as e:
 		if raise_error:
 			raise e
 		return None
-	return summery
+	return summary
 
 def summarize_watchlist(watchlist_path):
 	watchlist = Watchlist(watchlist_path)

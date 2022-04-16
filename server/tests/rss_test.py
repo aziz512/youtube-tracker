@@ -42,10 +42,9 @@ def test_summarize_feed(youtube_feed, invidious_feed):
 	)
 	for feed, url in feeds:
 		summary = summarize_feed(feed, raise_error=True)
-		assert summary['title'] == 'YouTube'
-		assert summary['author'] == 'YouTube'
-		assert summary['channel_id'] == 'UCBR8-60-B28hp2BmDPdntcQ'
-		assert summary['channel_url'] == url
+		assert summary['channel']['name'] == 'YouTube'
+		assert summary['channel']['id'] == 'UCBR8-60-B28hp2BmDPdntcQ'
+		assert summary['channel']['url'] == url
 
 def test_summarize_feed_borked(borked_feed):
 	try:
