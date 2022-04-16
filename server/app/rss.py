@@ -48,7 +48,7 @@ def summarize_feed(feed, raise_error=False):
 		return None
 	return summery
 
-def summerize_watchlist(watchlist_path):
+def summarize_watchlist(watchlist_path):
 	watchlist = Watchlist(watchlist_path)
 	feeds = map(from_watchlist_item,watchlist)
 	summaries = [ feed for feed in map(summarize_feed, feeds)

@@ -12,4 +12,4 @@ def add_routes(app):
 
 	@app.route('/videos')
 	def videos():
-		return jsonify(rss.summerize_watchlist(app.config['watchlist']))
+		return jsonify(rss.summarize_watchlist(app.config['watchlist']))
