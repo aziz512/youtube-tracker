@@ -81,3 +81,9 @@ class Watchlist:
 				config.write(file)
 		elif os.path.isdir(file_path):
 			raise IsADirectoryError("watchlist must be a file")
+
+def unpack_entry(watchlist_item):
+	channel_id = watchlist_item['id']
+	source = watchlist_item['source']
+	site = watchlist_item['site']
+	return (channel_id, source, site)

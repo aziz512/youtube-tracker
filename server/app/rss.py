@@ -1,12 +1,7 @@
 import feedparser
 from .watchlist import Watchlist
+from .watchlist import unpack_entry
 from .watchlist import url_formats
-
-def unpack_entry(watchlist_item):
-	channel_id = watchlist_item['id']
-	source = watchlist_item['source']
-	site = watchlist_item['site']
-	return (channel_id, source, site)
 
 def get_rss_url(watchlist_item):
 	channel_id, source, site = unpack_entry(watchlist_item)
