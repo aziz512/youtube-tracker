@@ -8,4 +8,8 @@ def add_routes(app):
 
 	@app.route('/videos_raw')
 	def videos_raw():
-		return jsonify(rss.summery(app.config['watchlist']))
+		return jsonify(rss.raw_feed(app.config['watchlist']))
+
+	@app.route('/videos')
+	def videos():
+		return jsonify(rss.summerize_watchlist(app.config['watchlist']))

@@ -36,3 +36,7 @@ def watchlist(app):
 @pytest.fixture()
 def borked_watchlist():
 	return Watchlist('tests/testdata/borked_watchlist.ini')
+
+@pytest.fixture()
+def borked_feed():
+	return feedparser.parse('tests/testdata/borked_feed.xml')
