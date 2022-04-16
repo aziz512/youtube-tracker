@@ -34,7 +34,6 @@ class Watchlist:
 
 			if source not in url_formats:
 				self.__is_invalid = True
-				print(source, 'not found in url_formats', file=stderr)
 				continue
 
 			if 'site' not in entry:
