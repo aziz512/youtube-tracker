@@ -46,6 +46,26 @@ def test_summarize_feed(youtube_feed, invidious_feed):
 		assert summary['channel']['id'] == 'UCBR8-60-B28hp2BmDPdntcQ'
 		assert summary['channel']['url'] == url
 
+def test_summarize_feed_videos_youtube(youtube_feed):
+	summary = summarize_feed(youtube_feed)
+	videos = summary['videos']
+	assert len(videos) == 15
+	videos[0]['id'] == 'MfWpA5ZV6Lo'
+	videos[0]['title'] == 'ready for front row access to Coachella? 🌴'
+	videos[0]['thumbnail'] == 'https://i2.ytimg.com/vi/MfWpA5ZV6Lo/hqdefault.jpg'
+	videos[0]['summary'] == 'catch the livestream, follow the artists, &amp; get front row access to @Coachella with YouTube, starting April 15 at 4PM PT 🎶'
+
+def test_summarize_feed_videos_invidious(invidious_feed):
+	summary = summarize_feed(invidious_feed)
+	videos = summary['videos']
+	assert len(videos) == 15
+	videos[6]['id'] == 'EYXDuiLcWsY'
+	videos[6]['title'] == '#youtubecoachellasweepstakes | Enter to win liftetime Coachella tickets from YouTube Shorts #Shorts'
+	videos[6]['thumbnail'] == 'https://vid.puffyan.us/vi/EYXDuiLcWsY/mqdefault.jpg'
+	videos[6]['summary'] == """Get your chance to win lifetime tickets to Coachella from YouTube Shorts. To enter, just create a Short telling us who your dream +1 would be if you won Coachella tickets for life, and use the hashtag #youtubecoachellasweepstakes. See full rules at the link below.
+
+No purchase necessary. US only. 14+. Ends 4/30/22. See official rules here: yt.be/coachellasweeps"""
+
 def test_summarize_feed_borked(borked_feed):
 	try:
 		summarize_feed(borked_feed, raise_error=True)

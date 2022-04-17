@@ -38,3 +38,10 @@ def test_videos(client):
 
 	assert three_blue['channel']['name'] == '3Blue1Brown'
 	assert three_blue['channel']['id'] == 'UCYO_jab_esuFRV4b17AJtAw'
+
+	for entry in data:
+		for video in entry['videos']:
+			assert type(video['id']) is str
+			assert type(video['summary']) is str
+			assert type(video['thumbnail']) is str
+			assert type(video['title']) is str
