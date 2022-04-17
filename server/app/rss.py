@@ -28,17 +28,31 @@ def _assign_path(dic, path, item):
 			cursor = cursor[key]
 	cursor[path[-1]] = item
 
-def _flatten(summary, feed, summary_path, feed_path, optional=False):
-	cursor = feed
-	for feed_key in feed_path:
-		is_correct_type = isinstance(cursor, list) or isinstance(cursor, dict)
-		if not is_correct_type or feed_key not in cursor:
+def _in_cursor(key, cursor):
+	if isinstance(cursor, list) or isinstance(cursor, tuple):
+		if type(key) is int:
+			return key >= 0 and key < len(cursor)
+	if isinstance(cursor, dict):
+		return key in cursor
+	return False
+
+def _flatten(target, source, target_path, source_path, optional=False):
+	if type(target_path) is int or type(target_path) is str:
+		target_path = (target_path,)
+	if type(source_path) is int or type(source_path) is str:
+		source_path = (source_path,)
+
+	cursor = source
+	for source_key in source_path:
+		correct_types = (list, tuple, dict)
+		is_correct_type = any(map(lambda t: isinstance(cursor, t), correct_types))
+		if not is_correct_type or not _in_cursor(source_key, cursor):
 			if not optional:
 				raise ValueError('invalid rss feed')
-			_assign_path(summary, summary_path, None)
+			_assign_path(target, target_path, None)
 			return
-		cursor = cursor[feed_key]
-	_assign_path(summary, summary_path, cursor)
+		cursor = cursor[source_key]
+	_assign_path(target, target_path, cursor)
 
 def summarize_feed(feed, raise_error=False):
 	summary = {}
@@ -51,6 +65,28 @@ def summarize_feed(feed, raise_error=False):
 		reword(('channel', 'name'), ('feed', 'title'))
 		reword(('channel', 'id')  , ('feed', 'yt_channelid'))
 		reword(('channel', 'url') , ('feed', 'href'))
+
+		videos = ( summarize_entry(entry, raise_error=raise_error)
+					for entry in feed.get('entries', tuple()) )
+		videos = list(filter(lambda x: x is not None, videos))
+		summary['videos'] = videos
+
+	except ValueError as e:
+		if raise_error:
+			raise e
+		return None
+	return summary
+
+def summarize_entry(entry, raise_error=False):
+	summary = {}
+	def reword(summary_path, entry_path, optional=False):
+		_flatten(summary, entry, summary_path, entry_path, optional=optional)
+
+	try:
+		reword('id', 'yt_videoid')
+		reword('title', 'title')
+		reword('summary', 'summary')
+		reword('thumbnail', ('media_thumbnail', 0, 'url'), optional=False)
 	except ValueError as e:
 		if raise_error:
 			raise e
