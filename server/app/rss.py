@@ -34,7 +34,7 @@ def _in_cursor(key, cursor):
 			return key >= 0 and key < len(cursor)
 	if isinstance(cursor, dict):
 		return key in cursor
-	return False
+	return False #pragma: nocover
 
 def _flatten(target, source, target_path, source_path, optional=False):
 	if type(target_path) is int or type(target_path) is str:
@@ -46,7 +46,7 @@ def _flatten(target, source, target_path, source_path, optional=False):
 	for source_key in source_path:
 		correct_types = (list, tuple, dict)
 		is_correct_type = any(map(lambda t: isinstance(cursor, t), correct_types))
-		if not is_correct_type or not _in_cursor(source_key, cursor):
+		if not is_correct_type or not _in_cursor(source_key, cursor): #pragma: nocover
 			if not optional:
 				raise ValueError('invalid rss feed')
 			_assign_path(target, target_path, None)
@@ -87,7 +87,7 @@ def summarize_entry(entry, raise_error=False):
 		reword('title', 'title')
 		reword('summary', 'summary')
 		reword('thumbnail', ('media_thumbnail', 0, 'url'), optional=False)
-	except ValueError as e:
+	except ValueError as e: #pragma: nocover
 		if raise_error:
 			raise e
 		return None
