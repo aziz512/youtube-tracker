@@ -77,6 +77,9 @@ def summarize_feed(feed, raise_error=False):
 		return None
 	return summary
 
+# Called by summarize_feed.
+# Summarizes an entry in a feed. Each entry is tied to a video.
+# Where a feed is tied to a youtube channel.
 def summarize_entry(entry, raise_error=False):
 	summary = {}
 	def reword(summary_path, entry_path, optional=False):
