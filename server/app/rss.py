@@ -86,7 +86,7 @@ def summarize_entry(entry, raise_error=False):
 		reword('id', 'yt_videoid')
 		reword('title', 'title')
 		reword('summary', 'summary')
-		reword('thumbnail', ('media_thumbnail', 0, 'url'), optional=False)
+		reword('thumbnail', ('media_thumbnail', 0, 'url'), optional=True)
 	except ValueError as e: #pragma: nocover
 		if raise_error:
 			raise e
