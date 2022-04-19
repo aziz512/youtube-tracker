@@ -36,7 +36,14 @@ def _in_cursor(key, cursor):
 		return key in cursor
 	return False #pragma: nocover
 
-def _flatten(target, source, target_path, source_path, optional=False):
+def _reword(target, source, mapping):
+	for item in mapping:
+		target_path = item[0]
+		source_path = item[1]
+		optional = len(item) == 3 and item[2]
+		_map_key(target, source, target_path, source_path, optional=optional)
+
+def _map_key(target, source, target_path, source_path, optional=False):
 	if type(target_path) is int or type(target_path) is str:
 		target_path = (target_path,)
 	if type(source_path) is int or type(source_path) is str:
@@ -56,15 +63,16 @@ def _flatten(target, source, target_path, source_path, optional=False):
 
 def summarize_feed(feed, raise_error=False):
 	summary = {}
-	def reword(summary_path, feed_path, optional=False):
-		_flatten(summary, feed, summary_path, feed_path, optional=optional)
 
 	try:
 		if feed.get('bozo', None) is not False:
 			raise ValueError('invalid rss feed')
-		reword(('channel', 'name'), ('feed', 'title'))
-		reword(('channel', 'id')  , ('feed', 'yt_channelid'))
-		reword(('channel', 'url') , ('feed', 'href'))
+		mapping = (
+			(('channel', 'name'), ('feed', 'title')),
+			(('channel', 'id')  , ('feed', 'yt_channelid')),
+			(('channel', 'url') , ('feed', 'href')),
+		)
+		_reword(summary, feed, mapping)
 
 		videos = ( summarize_entry(entry, raise_error=raise_error)
 					for entry in feed.get('entries', tuple()) )
@@ -82,14 +90,15 @@ def summarize_feed(feed, raise_error=False):
 # Where a feed is tied to a youtube channel.
 def summarize_entry(entry, raise_error=False):
 	summary = {}
-	def reword(summary_path, entry_path, optional=False):
-		_flatten(summary, entry, summary_path, entry_path, optional=optional)
 
 	try:
-		reword('id', 'yt_videoid')
-		reword('title', 'title')
-		reword('summary', 'summary')
-		reword('thumbnail', ('media_thumbnail', 0, 'url'), optional=True)
+		mapping = (
+			('id', 'yt_videoid'),
+			('title', 'title'),
+			('summary', 'summary'),
+			('thumbnail', ('media_thumbnail', 0, 'url'), True), #optional
+		)
+		_reword(summary, entry, mapping)
 	except ValueError as e: #pragma: nocover
 		if raise_error:
 			raise e
