@@ -14,6 +14,7 @@ virtualenv:
 	virtualenv virtualenv
 	. virtualenv/bin/activate
 	pip install flask
+	pip install flask-cors
 	pip install pytest
 	pip install coverage
 	pip install feedparser
