@@ -1,22 +1,19 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
-
-const Title = styled.div`
-  font-size: 1.5em;
-  text-align: center;
-  color: navy;
-`;
+import Home from './components/Home';
 
 const App = () => {
-  useEffect(() => {
-    console.log('some log');
-  }, []);
-
   return (
-    <div>
-      <Title>Hello World!</Title>
-    </div>
+    <Content>
+      <Home></Home>
+    </Content>
   );
 };
 
 export default App;
+
+
+const Content = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  padding: 30px 0;
+`;
