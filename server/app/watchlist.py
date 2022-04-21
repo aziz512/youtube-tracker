@@ -85,9 +85,9 @@ class Watchlist:
 			if source is not None and channel['source'] != source.lower():
 				continue
 			if site is not None and channel['site'] != site:
-				continue
+				continue #pragma nocover
 			if name is not None and channel['name'] != name:
-				continue
+				continue #pragma nocover
 			self.channels.pop(i)
 			return True
 		return False

@@ -48,6 +48,19 @@ def test_add_to_watchlist():
 	Watchlist.create_if_not_exist(path)
 	watchlist = Watchlist(path)
 
+	try:
+		watchlist.add_channel()
+	except TypeError:
+		pass
+
+	try:
+		watchlist.add_channel(
+			id = 'UCYO_jab_esuFRV4b17AJtAw',
+			source = 'non-existant',
+		)
+	except ValueError:
+		pass
+
 	watchlist.add_channel(
 		name = '3Blue1Brown',
 		id = 'UCYO_jab_esuFRV4b17AJtAw',
@@ -94,6 +107,11 @@ def test_remove_from_watchlist():
 		os.remove(path)
 	Watchlist.create_if_not_exist(path)
 	watchlist = Watchlist(path)
+
+	try:
+		watchlist.remove_channel()
+	except TypeError:
+		pass
 
 	watchlist.add_channel(
 		name = '3Blue1Brown',
