@@ -40,3 +40,50 @@ def test_borked_watchlist(borked_watchlist):
 def test_is_invalid(watchlist, borked_watchlist):
 	assert watchlist.is_invalid() is False
 	assert borked_watchlist.is_invalid() is True
+
+def test_add_to_watchlist():
+	path = 'tests/testdir/test_add_to_watchlist.ini'
+	if os.path.exists(path):
+		os.remove(path)
+	Watchlist.create_if_not_exist(path)
+	watchlist = Watchlist(path)
+
+	watchlist.add_channel(
+		name = '3Blue1Brown',
+		id = 'UCYO_jab_esuFRV4b17AJtAw',
+	)
+	assert watchlist.channels[-1]['source'] == 'youtube'
+	assert watchlist.channels[-1]['site'] == 'www.youtube.com'
+
+	watchlist.add_channel(
+		name = 'Fireship',
+		id = 'UCsBjURrPoezykLs9EqgamOA',
+		source = 'Invidious',
+	)
+	assert watchlist.channels[-1]['source'] == 'invidious'
+	assert watchlist.channels[-1]['site'] == 'vid.puffyan.us'
+
+	watchlist.write()
+
+	read_list = Watchlist(path)
+	assert read_list.channels == [
+		{
+			'name': 'Youtube',
+			'id': 'UCBR8-60-B28hp2BmDPdntcQ',
+			'source': 'youtube',
+			'site': 'www.youtube.com',
+		},
+		{
+			'name': '3Blue1Brown',
+			'id': 'UCYO_jab_esuFRV4b17AJtAw',
+			'source': 'youtube',
+			'site': 'www.youtube.com',
+		},
+		{
+			'name': 'Fireship',
+			'id': 'UCsBjURrPoezykLs9EqgamOA',
+			'source': 'invidious',
+			'site': 'vid.puffyan.us',
+		},
+	]
+	os.remove(path)

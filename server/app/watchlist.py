@@ -16,6 +16,7 @@ url_formats = {
 class Watchlist:
 	def __init__(self, file_path):
 		self.__is_invalid = False
+		self.path = file_path
 		parser = ConfigParser()
 		parser.read(file_path)
 		channels = []
@@ -55,6 +56,36 @@ class Watchlist:
 
 	def is_invalid(self):
 		return self.__is_invalid
+
+	def write(self):
+		self.write_watchlist(self, self.path)
+
+	def add_channel(self, id=None, source='youtube', site=None, name='channel'):
+		if id is None:
+			raise TypeError('Missing keyword argument "id", string expected')
+		source = source.lower()
+		if source not in url_formats:
+			raise ValueError('source not in url formats')
+		if site is None:
+			site = url_formats[source]['default_site']
+		self.channels.append({
+			'name': name,
+			'id': id,
+			'source': source,
+			'site': site,
+		})
+
+	@staticmethod
+	def write_watchlist(watchlist, path):
+		config = ConfigParser()
+		for channel in watchlist.channels:
+			config[channel['name']] = {
+				'id': channel['id'],
+				'source': channel['source'],
+				'site': channel['site'],
+			}
+		with open(path, 'w') as file:
+			config.write(file)
 
 	@staticmethod
 	def create_if_not_exist(file_path):
