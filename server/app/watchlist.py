@@ -75,6 +75,23 @@ class Watchlist:
 			'site': site,
 		})
 
+	def remove_channel(self, id=None, source=None, site=None, name=None):
+		if id is None:
+			raise TypeError('Missing keyword argument "id", string expected')
+		for i in range(len(self.channels)):
+			channel = self.channels[i]
+			if channel['id'] != id:
+				continue
+			if source is not None and channel['source'] != source.lower():
+				continue
+			if site is not None and channel['site'] != site:
+				continue
+			if name is not None and channel['name'] != name:
+				continue
+			self.channels.pop(i)
+			return True
+		return False
+
 	@staticmethod
 	def write_watchlist(watchlist, path):
 		config = ConfigParser()

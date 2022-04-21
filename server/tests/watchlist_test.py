@@ -87,3 +87,57 @@ def test_add_to_watchlist():
 		},
 	]
 	os.remove(path)
+
+def test_remove_from_watchlist():
+	path = 'tests/testdir/test_remove_from_watchlist.ini'
+	if os.path.exists(path):
+		os.remove(path)
+	Watchlist.create_if_not_exist(path)
+	watchlist = Watchlist(path)
+
+	watchlist.add_channel(
+		name = '3Blue1Brown',
+		id = 'UCYO_jab_esuFRV4b17AJtAw',
+	)
+
+	assert watchlist.remove_channel(
+		id = 'UCBR8-60-B28hp2BmDPdntcQ',
+	)
+	assert not watchlist.remove_channel(
+		id = 'UCBR8-60-B28hp2BmDPdntcQ',
+	)
+	assert watchlist.channels == [
+		{
+			'name': '3Blue1Brown',
+			'id': 'UCYO_jab_esuFRV4b17AJtAw',
+			'source': 'youtube',
+			'site': 'www.youtube.com',
+		},
+	]
+
+	watchlist.add_channel(
+		name = '3Blue1Brown',
+		id = 'UCYO_jab_esuFRV4b17AJtAw',
+		source = 'invidious',
+		site = 'vid.puffyan.us',
+	)
+
+	assert watchlist.remove_channel(
+		id = 'UCYO_jab_esuFRV4b17AJtAw',
+		source = 'Youtube',
+	)
+	assert not watchlist.remove_channel(
+		id = 'UCYO_jab_esuFRV4b17AJtAw',
+		source = 'Youtube',
+	)
+	watchlist.write()
+	read_list = Watchlist(path)
+	assert read_list.channels == [
+		{
+			'name': '3Blue1Brown',
+			'id': 'UCYO_jab_esuFRV4b17AJtAw',
+			'source': 'invidious',
+			'site': 'vid.puffyan.us',
+		},
+	]
+	os.remove(path)
