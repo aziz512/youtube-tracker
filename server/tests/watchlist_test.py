@@ -11,7 +11,7 @@ def test_watchlist(watchlist):
 	assert correct_list == list(map(lambda x: x['id'], watchlist))
 
 def test_create_if_not_exist():
-	path = 'tests/testdir/watchlist'
+	path = 'tests/testdir/watchlist.ini'
 	if os.path.exists(path):
 		if os.path.isdir(path):
 			os.rmdir(path)
