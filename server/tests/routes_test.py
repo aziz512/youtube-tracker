@@ -1,5 +1,7 @@
 import os
 import json
+from app import create_app
+from app.watchlist import Watchlist
 
 def test_hello_world(client):
 	response = client.get("/hello_world")
@@ -45,3 +47,56 @@ def test_videos(client):
 			assert type(video['summary']) is str
 			assert type(video['thumbnail']) is str
 			assert type(video['title']) is str
+
+def test_modify_watchlist():
+	path = 'tests/testdir/test_modify_watchlist.ini'
+	if os.path.exists(path):
+		os.remove(path)
+	app = create_app(rss_watchlist=path)
+	client = app.test_client()
+
+	response = client.post('/watchlist', json={
+		'name': '3Blue1Brown',
+	})
+	assert response.data == b'invalid json'
+
+	response = client.post('/watchlist', json={
+		'id': 'UCYO_jab_esuFRV4b17AJtAw',
+		'name': '3Blue1Brown',
+	})
+	assert response.data == b'success'
+
+	# add Fireship, default name is channel
+	response = client.post('/watchlist', json={
+		'id': 'UCsBjURrPoezykLs9EqgamOA',
+	})
+	assert response.data == b'success'
+
+	response = client.post('/watchlist', json={
+		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
+		'name': 'Youtube',
+	})
+	assert response.data == b'success'
+
+	# delete Youtube
+	response = client.delete('/watchlist', json={
+		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
+	})
+	assert response.data == b'success'
+
+	# delete 3Blue1Brown
+	response = client.delete('/watchlist', json={
+		'id': 'UCYO_jab_esuFRV4b17AJtAw',
+	})
+	assert response.data == b'success'
+
+	watchlist = Watchlist(app.config['watchlist'])
+	assert watchlist.channels == [
+		{
+			'name': 'channel',
+			'id': 'UCsBjURrPoezykLs9EqgamOA',
+			'source': 'youtube',
+			'site': 'www.youtube.com',
+		}
+	]
+	os.remove(path)
