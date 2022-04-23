@@ -25,7 +25,7 @@ def add_routes(app):
 		# only required value is 'id'
 		json = request.get_json()
 		if 'id' not in json:
-			return 'invalid json'
+			return '', 400 # bad request
 		args = {}
 		_copy_values(args, json, ('id', 'source', 'site', 'name'))
 
@@ -35,4 +35,4 @@ def add_routes(app):
 		if request.method == 'DELETE':
 			watchlist.remove_channel(**args)
 		watchlist.write()
-		return 'success'
+		return '', 200 # ok
