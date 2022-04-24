@@ -1,6 +1,7 @@
 from flask import jsonify, request
 from .watchlist import Watchlist
 from . import rss
+from . import video_download
 
 def _copy_values(target, source, keys):
 	for key in keys:
@@ -36,3 +37,13 @@ def add_routes(app):
 			watchlist.remove_channel(**args)
 		watchlist.write()
 		return '', 200 # ok
+	
+	@app.route('/download-video', methods=['GET', 'POST'])
+	def download_video():
+		video_id = request.args.get('videoid')
+		if len(video_id) != 11: # yt vids are 11 chars
+			return '', 400
+		download_status = video_download.download_video(video_id)
+		if download_status == 'DownloadError':
+			return download_status, 400
+		return '', 200

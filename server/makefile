@@ -18,6 +18,7 @@ virtualenv:
 	pip install pytest
 	pip install coverage
 	pip install feedparser
+	pip install yt-dlp
 
 purge: clean
 	-rm -r virtualenv
