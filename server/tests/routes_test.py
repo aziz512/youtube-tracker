@@ -97,7 +97,7 @@ def test_modify_watchlist():
 	assert response.status == '200 OK'
 
 	watchlist = Watchlist(app.config['watchlist'])
-	assert watchlist.channels == [
+	assert list(watchlist) == [
 		{
 			'name': 'channel',
 			'id': 'UCsBjURrPoezykLs9EqgamOA',

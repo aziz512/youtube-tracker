@@ -33,6 +33,6 @@ def add_routes(app):
 		if request.method == 'POST':
 			watchlist.add_channel(**args)
 		if request.method == 'DELETE':
-			watchlist.remove_channel(**args)
+			watchlist.remove_channel(args['id'])
 		watchlist.write()
 		return '', 200 # ok
