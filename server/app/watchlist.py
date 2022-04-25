@@ -19,14 +19,16 @@ class Watchlist:
 		self.path = file_path
 		parser = ConfigParser()
 		parser.read(file_path)
-		channels = []
-		for section in parser.sections():
-			entry = parser[section]
-
-			if 'id' not in entry:
-				self.__is_invalid = True
+		channels = {}
+		for id in parser.sections():
+			if not self.is_valid_id(id):
 				continue
-			id = entry['id']
+			entry = parser[id]
+
+			if 'name' not in entry:
+				name = 'channel' #pragma nocover
+			else:
+				name = entry['name']
 
 			if 'source' not in entry:
 				source = 'youtube'
@@ -42,16 +44,17 @@ class Watchlist:
 			else:
 				site = entry['site']
 
-			channel = {}
-			channel['name'] = section
-			channel['id'] = id
-			channel['source'] = source
-			channel['site'] = site
-			channels.append(channel)
+			channels[id] = {
+				'name': name,
+				'source': source,
+				'site': site,
+			}
 		self.channels = channels
 
 	def __iter__(self):
-		for channel in self.channels:
+		for id in self.channels:
+			channel = self.channels[id].copy()
+			channel['id'] = id
 			yield channel
 
 	def is_invalid(self):
@@ -68,36 +71,33 @@ class Watchlist:
 			raise ValueError('source not in url formats')
 		if site is None:
 			site = url_formats[source]['default_site']
-		self.channels.append({
+		self.channels[id] = {
 			'name': name,
-			'id': id,
 			'source': source,
 			'site': site,
-		})
+		}
 
-	def remove_channel(self, id=None, source=None, site=None, name=None):
-		if id is None:
-			raise TypeError('Missing keyword argument "id", string expected')
-		for i in range(len(self.channels)):
-			channel = self.channels[i]
-			if channel['id'] != id:
-				continue
-			if source is not None and channel['source'] != source.lower():
-				continue
-			if site is not None and channel['site'] != site:
-				continue #pragma nocover
-			if name is not None and channel['name'] != name:
-				continue #pragma nocover
-			self.channels.pop(i)
+	def remove_channel(self, id):
+		if id in self.channels:
+			del self.channels[id]
 			return True
 		return False
 
 	@staticmethod
+	def is_valid_id(id):
+		if len(id) != 24:
+			return False
+		for char in id.lower():
+			if char not in 'abcdefghijklmnopqrstuvwxyz0123456789-_':
+				return False
+		return True
+
+	@staticmethod
 	def write_watchlist(watchlist, path):
 		config = ConfigParser()
-		for channel in watchlist.channels:
-			config[channel['name']] = {
-				'id': channel['id'],
+		for channel in watchlist:
+			config[channel['id']] = {
+				'name': channel['name'],
 				'source': channel['source'],
 				'site': channel['site'],
 			}
@@ -108,8 +108,9 @@ class Watchlist:
 	def create_if_not_exist(file_path):
 		if not os.path.exists(file_path):
 			config = ConfigParser()
-			config['Youtube'] = {
-				'id': 'UCBR8-60-B28hp2BmDPdntcQ',
+			id = 'UCBR8-60-B28hp2BmDPdntcQ'
+			config[id] = {
+				'name': 'Youtube',
 			}
 			with open(file_path, 'w') as file:
 				comments = [
