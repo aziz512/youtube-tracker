@@ -19,6 +19,7 @@ virtualenv:
 	pip install coverage
 	pip install feedparser
 	pip install yt-dlp
+	pip install aioflask
 
 purge: clean
 	-rm -r virtualenv
