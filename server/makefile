@@ -13,19 +13,19 @@ all: virtualenv
 virtualenv:
 	virtualenv virtualenv
 	. virtualenv/bin/activate
-	pip install flask
+	pip install flask[async]
 	pip install flask-cors
 	pip install pytest
 	pip install coverage
 	pip install feedparser
 	pip install yt-dlp
-	pip install aioflask
 
 purge: clean
 	-rm -r virtualenv
 
 clean:
 	-rm .coverage
+	-rm -r downloadedvideos
 	-find . -path ./virtualenv -prune \
 		-o -type d -name __pycache__ -print \
 		-o -type d -name .pytest_cache -print \
