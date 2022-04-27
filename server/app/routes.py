@@ -52,6 +52,4 @@ def add_routes(app):
 		download_video = DownloadVideo(ydl_opts)
 		download_status = await download_video.download_video(video_id)
 
-		return jsonify(download_status, 200) if download_status == 'DownloadError' else jsonify('', 400)
-
-		
+		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
