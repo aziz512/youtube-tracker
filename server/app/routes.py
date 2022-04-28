@@ -43,11 +43,9 @@ def add_routes(app):
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: # yt vids are 11 chars
 			return '', 400
-    
 		ydl_opts = {
-      'format': 'mp4/bestaudio/best',
-      'outtmpl': './downloadedvideos/%(title)s.%(ext)s',
-    
+			'format': 'mp4/bestaudio/best',
+			'outtmpl': './downloadedvideos/%(title)s.%(ext)s',
 		}
 		download_video = DownloadVideo(ydl_opts)
 		download_status = await download_video.download_video(video_id)
