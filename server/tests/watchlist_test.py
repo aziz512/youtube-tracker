@@ -28,7 +28,6 @@ def test_create_if_not_exist():
 
 def test_borked_watchlist(borked_watchlist):
 	# only one valid entry
-	print(list(borked_watchlist))
 	assert list(borked_watchlist) == [
 		{
 			'id': 'UCsBjURrPoezykLs9EqgamOA',
