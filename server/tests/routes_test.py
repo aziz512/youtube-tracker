@@ -106,3 +106,43 @@ def test_modify_watchlist():
 		}
 	]
 	os.remove(path)
+
+def test_modify_watchlist_by_url():
+	if os.getenv('FETCH_TEST') != 'true': return
+
+	path = 'tests/testdir/test_modify_watchlist_by_url.ini'
+	if os.path.exists(path):
+		os.remove(path)
+	app = create_app(rss_watchlist=path)
+	client = app.test_client()
+
+	response = client.post('/watchlist', json={
+		'url': 'https://www.youtube.com/c/3blue1brown/featured',
+		'id': 'UCYO_jab_esuFRV4b17AJtAw',
+	})
+	assert response.data == b''
+	assert response.status == '400 BAD REQUEST'
+
+	response = client.post('/watchlist', json={
+		'url': 'https://www.youtube.com/c/3blue1brown/featured',
+	})
+	watchlist = Watchlist(app.config['watchlist'])
+	assert {
+		'id': 'UCYO_jab_esuFRV4b17AJtAw',
+		'name': 'channel',
+		'site': 'www.youtube.com',
+		'source': 'youtube',
+	} == list(watchlist)[-1]
+
+	response = client.delete('/watchlist', json={
+		'url': 'https://www.youtube.com/c/3blue1brown/featured',
+	})
+	watchlist = Watchlist(app.config['watchlist'])
+	assert {
+		'id': 'UCYO_jab_esuFRV4b17AJtAw',
+		'name': 'channel',
+		'site': 'www.youtube.com',
+		'source': 'youtube',
+	} not in list(watchlist)
+
+	os.remove(path)

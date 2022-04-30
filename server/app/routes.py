@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from .watchlist import Watchlist
 from . import rss
-from .video_download import DownloadVideo
+from .video_download import DownloadVideo, url_to_video_id
 
 def _copy_values(target, source, keys):
 	for key in keys:
@@ -22,13 +22,23 @@ def add_routes(app):
 		return jsonify(rss.summarize_watchlist(app.config['watchlist']))
 
 	@app.route('/watchlist', methods=['POST', 'DELETE'])
-	def modify_watchlist():
+	async def modify_watchlist():
 		# only required value is 'id'
 		json = request.get_json()
-		if 'id' not in json:
+		if 'id' not in json and 'url' not in json:
 			return '', 400 # bad request
+		if 'id' in json and 'url' in json:
+			return '', 400 # bad request
+
 		args = {}
-		_copy_values(args, json, ('id', 'source', 'site', 'name'))
+		if 'id' in json:
+			_copy_values(args, json, ('id', 'source', 'site', 'name'))
+		if 'url' in json:
+			id = await url_to_video_id(json['url'])
+			if id is None: #pragma: nocover
+				# channel id is not found
+				return '', 404 # Not Found
+			args['id'] = id
 
 		watchlist = Watchlist(app.config['watchlist'])
 		if request.method == 'POST':
