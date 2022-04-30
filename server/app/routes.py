@@ -26,9 +26,9 @@ def add_routes(app):
 		# only required value is 'id'
 		json = request.get_json()
 		if 'id' not in json and 'url' not in json:
-			return '', 400 # bad request
+			return 'requires the fields "id" or "url" to specify which channel to add', 400 # bad request
 		if 'id' in json and 'url' in json:
-			return '', 400 # bad request
+			return '"id" and "url" are mutually exclusive', 400 # bad request
 
 		args = {}
 		if 'id' in json:
@@ -37,7 +37,7 @@ def add_routes(app):
 			id = await url_to_video_id(json['url'])
 			if id is None: #pragma: nocover
 				# channel id is not found
-				return '', 404 # Not Found
+				return "couldn't extract channel id from url", 404 # Not Found
 			args['id'] = id
 
 		watchlist = Watchlist(app.config['watchlist'])
@@ -52,7 +52,7 @@ def add_routes(app):
 	async def download_video():
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: # yt vids are 11 chars
-			return '', 400
+			return 'invalid video id', 400
 		ydl_opts = {
 			'format': 'mp4/bestaudio/best',
 			'outtmpl': './downloadedvideos/%(title)s.%(ext)s',

@@ -58,42 +58,36 @@ def test_modify_watchlist():
 	response = client.post('/watchlist', json={
 		'name': '3Blue1Brown',
 	})
-	assert response.data == b''
 	assert response.status == '400 BAD REQUEST'
 
 	response = client.post('/watchlist', json={
 		'id': 'UCYO_jab_esuFRV4b17AJtAw',
 		'name': '3Blue1Brown',
 	})
-	assert response.data == b''
 	assert response.status == '200 OK'
 
 	# add Fireship, default name is channel
 	response = client.post('/watchlist', json={
 		'id': 'UCsBjURrPoezykLs9EqgamOA',
 	})
-	assert response.data == b''
 	assert response.status == '200 OK'
 
 	response = client.post('/watchlist', json={
 		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
 		'name': 'Youtube',
 	})
-	assert response.data == b''
 	assert response.status == '200 OK'
 
 	# delete Youtube
 	response = client.delete('/watchlist', json={
 		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
 	})
-	assert response.data == b''
 	assert response.status == '200 OK'
 
 	# delete 3Blue1Brown
 	response = client.delete('/watchlist', json={
 		'id': 'UCYO_jab_esuFRV4b17AJtAw',
 	})
-	assert response.data == b''
 	assert response.status == '200 OK'
 
 	watchlist = Watchlist(app.config['watchlist'])
@@ -120,7 +114,6 @@ def test_modify_watchlist_by_url():
 		'url': 'https://www.youtube.com/c/3blue1brown/featured',
 		'id': 'UCYO_jab_esuFRV4b17AJtAw',
 	})
-	assert response.data == b''
 	assert response.status == '400 BAD REQUEST'
 
 	response = client.post('/watchlist', json={
