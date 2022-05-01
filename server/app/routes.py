@@ -1,5 +1,12 @@
-from flask import jsonify
+from flask import jsonify, request
+from .watchlist import Watchlist
 from . import rss
+from .video_download import DownloadVideo, url_to_video_id
+
+def _copy_values(target, source, keys):
+	for key in keys:
+		if key in source:
+			target[key] = source[key]
 
 def add_routes(app):
 	@app.route('/hello_world')
@@ -13,3 +20,44 @@ def add_routes(app):
 	@app.route('/videos')
 	def videos():
 		return jsonify(rss.summarize_watchlist(app.config['watchlist']))
+
+	@app.route('/watchlist', methods=['POST', 'DELETE'])
+	async def modify_watchlist():
+		# only required value is 'id'
+		json = request.get_json()
+		if 'id' not in json and 'url' not in json:
+			return 'requires the fields "id" or "url" to specify which channel to add', 400 # bad request
+		if 'id' in json and 'url' in json:
+			return '"id" and "url" are mutually exclusive', 400 # bad request
+
+		args = {}
+		if 'id' in json:
+			_copy_values(args, json, ('id', 'source', 'site', 'name'))
+		if 'url' in json:
+			id = await url_to_video_id(json['url'])
+			if id is None: #pragma: nocover
+				# channel id is not found
+				return "couldn't extract channel id from url", 404 # Not Found
+			args['id'] = id
+
+		watchlist = Watchlist(app.config['watchlist'])
+		if request.method == 'POST':
+			watchlist.add_channel(**args)
+		if request.method == 'DELETE':
+			watchlist.remove_channel(args['id'])
+		watchlist.write()
+		return '', 200 # ok
+	
+	@app.route('/download-video', methods=['GET', 'POST'])
+	async def download_video():
+		video_id = request.args.get('videoid')
+		if len(video_id) != 11: # yt vids are 11 chars
+			return 'invalid video id', 400
+		ydl_opts = {
+			'format': 'mp4/bestaudio/best',
+			'outtmpl': './downloadedvideos/%(title)s.%(ext)s',
+		}
+		download_video = DownloadVideo(ydl_opts)
+		download_status = await download_video.download_video(video_id)
+
+		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
