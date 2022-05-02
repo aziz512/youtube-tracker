@@ -89,6 +89,9 @@ def extract_info(url, opts=None, process=False):
 		return info
 	return None #pragma: nocover
 
+def async_extract_info(*args, **kwargs):
+	return asyncio.to_thread(lambda: extract_info(*args, **kwargs))
+
 url_matchers = [
 	ChannelUrlMatcher(),
 	ChannelUrlMatcher(suffix='featured'),
