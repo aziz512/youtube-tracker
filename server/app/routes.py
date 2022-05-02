@@ -15,12 +15,15 @@ def add_routes(app):
 		return 'Hello World!'
 
 	@app.route('/videos_raw')
-	def videos_raw():
-		return jsonify(rss.raw_feed(app.config['watchlist']))
+	async def videos_raw():
+		feed = await asyncio.to_thread(lambda: rss.raw_feed(app.config['watchlist']))
+		return jsonify(feed)
 
 	@app.route('/videos')
-	def videos():
-		return jsonify(rss.summarize_watchlist(app.config['watchlist']))
+	async def videos():
+		summarize_func = lambda: rss.summarize_watchlist(app.config['watchlist'])
+		summary = await asyncio.to_thread(summarize_func)
+		return jsonify(summary)
 
 	async def validate_id(id):
 		url = f'https://www.youtube.com/channel/{id}'
