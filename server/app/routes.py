@@ -1,7 +1,8 @@
+import asyncio
 from flask import jsonify, request
 from .watchlist import Watchlist
 from . import rss
-from .video_download import DownloadVideo, url_to_video_id
+from .video_download import DownloadVideo, url_to_video_id, async_extract_info
 
 def _copy_values(target, source, keys):
 	for key in keys:
@@ -14,12 +15,20 @@ def add_routes(app):
 		return 'Hello World!'
 
 	@app.route('/videos_raw')
-	def videos_raw():
-		return jsonify(rss.raw_feed(app.config['watchlist']))
+	async def videos_raw():
+		feed = await asyncio.to_thread(lambda: rss.raw_feed(app.config['watchlist']))
+		return jsonify(feed)
 
 	@app.route('/videos')
-	def videos():
-		return jsonify(rss.summarize_watchlist(app.config['watchlist']))
+	async def videos():
+		summarize_func = lambda: rss.summarize_watchlist(app.config['watchlist'])
+		summary = await asyncio.to_thread(summarize_func)
+		return jsonify(summary)
+
+	async def is_invalid_id(id):
+		url = f'https://www.youtube.com/channel/{id}'
+		info = await async_extract_info(url)
+		return info is None or 'uploader_id' not in info or info['uploader_id'] != id
 
 	@app.route('/watchlist', methods=['POST', 'DELETE'])
 	async def modify_watchlist():
@@ -42,7 +51,12 @@ def add_routes(app):
 
 		watchlist = Watchlist(app.config['watchlist'])
 		if request.method == 'POST':
+			if 'id' in json and await is_invalid_id(args['id']):
+				return 'Channel id is invalid', 404
 			watchlist.add_channel(**args)
+			feed = await asyncio.to_thread(lambda: rss.from_watchlist_item(watchlist[args['id']]))
+			watchlist.write()
+			return jsonify(rss.summarize_feed(feed)), 200 # ok
 		if request.method == 'DELETE':
 			watchlist.remove_channel(args['id'])
 		watchlist.write()

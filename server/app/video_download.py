@@ -69,22 +69,28 @@ class ChannelNamedUrlMatcher(ChannelUrlMatcher):
 			return result
 		name = result['name']
 
-		ydl_opts = {
-			'playlist_items': '1', 
-		}
-		with YoutubeDL(ydl_opts) as ydl:
-			url = f'{self.protocol}://{self.site}/{self.path}/{name}/videos'
-			try:
-				info = ydl.extract_info(url, download=False)
-			except DownloadError: #pragma: nocover
-				return None
-			if 'uploader_id' in info:
-				result['id'] = info['uploader_id']
-				return result
-			return None #pragma: nocover
+		url = f'{self.protocol}://{self.site}/{self.path}/{name}/videos'
+		info = extract_info(url)
+		if 'uploader_id' in info:
+			result['id'] = info['uploader_id']
+			return result
+		return None #pragma: nocover
 
-	async def match_async(self, url):
-		return await asyncio.to_thread(lambda: self.match(url))
+	def match_async(self, url):
+		return asyncio.to_thread(lambda: self.match(url))
+
+def extract_info(url, opts=None, process=False):
+	opts = {} if opts is None else opts
+	with YoutubeDL(opts) as ydl:
+		try:
+			info = ydl.extract_info(url, download=False, process=False)
+		except DownloadError: #pragma: nocover
+			return None
+		return info
+	return None #pragma: nocover
+
+def async_extract_info(*args, **kwargs):
+	return asyncio.to_thread(lambda: extract_info(*args, **kwargs))
 
 url_matchers = [
 	ChannelUrlMatcher(),

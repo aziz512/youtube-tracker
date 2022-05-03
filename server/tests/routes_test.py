@@ -49,6 +49,8 @@ def test_videos(client):
 			assert type(video['title']) is str
 
 def test_modify_watchlist():
+	if os.getenv('FETCH_TEST') != 'true': return
+
 	path = 'tests/testdir/test_modify_watchlist.ini'
 	if os.path.exists(path):
 		os.remove(path)
@@ -71,6 +73,12 @@ def test_modify_watchlist():
 		'id': 'UCsBjURrPoezykLs9EqgamOA',
 	})
 	assert response.status == '200 OK'
+	data = json.loads(response.data)
+	assert 'channel' in data
+	assert data['channel']['id'] == 'UCsBjURrPoezykLs9EqgamOA'
+	assert data['channel']['name'] == 'Fireship'
+	assert data['channel']['url'] == 'https://www.youtube.com/channel/UCsBjURrPoezykLs9EqgamOA'
+	assert 'videos' in data
 
 	response = client.post('/watchlist', json={
 		'id': 'UCBR8-60-B28hp2BmDPdntcQ',

@@ -57,6 +57,14 @@ class Watchlist:
 			channel['id'] = id
 			yield channel
 
+	def __contains__(self, id):
+		return id in self.channels
+
+	def __getitem__(self, id):
+		channel = self.channels[id].copy()
+		channel['id'] = id
+		return channel
+
 	def is_invalid(self):
 		return self.__is_invalid
 
