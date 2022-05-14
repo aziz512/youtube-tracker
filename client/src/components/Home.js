@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch("http://127.0.0.1:5000/videos").then(
+      const receivedChannels = await fetch('http://127.0.0.1:5000/videos').then(
         (res) => res.json()
       );
       setChannels(receivedChannels);
@@ -22,7 +22,7 @@ const Home = () => {
             {videos.map((video) => (
               <VideoItem>
                 <LinkWrapper
-                  href={"https://www.youtube.com/watch?v=" + video.id}
+                  href={'https://www.youtube.com/watch?v=' + video.id}
                   target="_blank"
                 >
                   <Thumbnail src={video.thumbnail} />
