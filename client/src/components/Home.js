@@ -1,42 +1,43 @@
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from "react";
+import styled from "styled-components";
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch('http://localhost:5000/videos').then(res => res.json());
+      const receivedChannels = await fetch("http://127.0.0.1:5000/videos").then(
+        (res) => res.json()
+      );
       setChannels(receivedChannels);
     })();
   }, []);
 
   return (
     <>
-      {
-        channels.map(({ channel: { name, id }, videos }) =>
-          <ChannelContainer key={id}>
-            <h3>{name}</h3>
-            <VideosContainer>
-              {
-                videos.map((video) => (
-                  <VideoItem>
-                    <LinkWrapper href={'https://www.youtube.com/watch?v=' + video.id} target='_blank'>
-                      <Thumbnail src={video.thumbnail} />
-                      <span>{video.title}</span>
-                    </LinkWrapper>
-                  </VideoItem>
-                ))
-              }
-            </VideosContainer>
-          </ChannelContainer>)
-      }
+      {channels.map(({ channel: { name, id }, videos }) => (
+        <ChannelContainer key={id}>
+          <h3>{name}</h3>
+          <VideosContainer>
+            {videos.map((video) => (
+              <VideoItem>
+                <LinkWrapper
+                  href={"https://www.youtube.com/watch?v=" + video.id}
+                  target="_blank"
+                >
+                  <Thumbnail src={video.thumbnail} />
+                  <span>{video.title}</span>
+                </LinkWrapper>
+              </VideoItem>
+            ))}
+          </VideosContainer>
+        </ChannelContainer>
+      ))}
     </>
   );
 };
 
 export default Home;
-
 
 const ChannelContainer = styled.div`
   padding: 10px;
@@ -63,8 +64,8 @@ const Thumbnail = styled.img`
 `;
 
 const LinkWrapper = styled.a`
-  &:any-link{
+  &:any-link {
     color: black;
     text-decoration: none;
   }
-`
+`;
