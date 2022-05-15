@@ -1,3 +1,46 @@
+"""
+Backend api
+
+GET /videos_raw
+  returns raw rss feed data
+
+GET /videos
+  returns
+  [
+    {
+      "channel": {
+                   "id": <channel_id>,
+                   "name": <channel_name>,
+                   "url": <channel_url>
+                 },
+      "videos": [
+        {
+          "id": <video_id>,
+          "summary": <video_summary>,
+          "thumbnail": <thumbnail_url>,
+          "title": <video_title>
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+
+GET, POST /download-video
+  Request arguments: "videoid".
+  Returns status + (code: 400) on error.
+  Returns (code: 200) on success.
+
+POST, DELETE /watchlist
+  Request arguments: "id" or "url"
+    "id" is a youtube channel id.
+    "url" is a url to a youtube channel page.
+  Adds or removes a channel from the watchlist.
+  Returns (code: 400) if arguments are invalid.
+  Returns (code: 404) if channel lookup has failed.
+  Returns (code: 200) on success.
+"""
+
 import asyncio
 from flask import jsonify, request
 from .watchlist import Watchlist

@@ -12,3 +12,6 @@ This is a YouTube Channel Tracker application.
 ## Starting the Dev server
  - `cd client`
  - `npm run dev`
+
+## API Reference
+Backend api is described in the docstring in server/app/routes.py
