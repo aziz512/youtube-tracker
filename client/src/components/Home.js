@@ -15,10 +15,13 @@ const Home = () => {
     })();
   }, []);
 
-  const onChannelAdded = ({ channel }) => {
+  const onChannelAdded = (channelData) => {
     // avoid adding undefined values and duplicates
-    if (channel && !channels.some(({ channel: { id } }) => id === channel.id)) {
-      setChannels([...channels, channel]);
+    if (
+      channelData &&
+      !channels.some(({ channel: { id } }) => id === channelData.channel.id)
+    ) {
+      setChannels([...channels, channelData]);
     }
   };
 

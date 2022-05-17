@@ -6,7 +6,9 @@ const AddChannel = ({ onChannelAdded }) => {
   const [channelUrl, setChannelUrl] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const onAddChannel = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
     try {
       const resp = await fetch(`${HOST}/watchlist`, {
         method: 'POST',
@@ -31,13 +33,14 @@ const AddChannel = ({ onChannelAdded }) => {
 
   return (
     <Container>
-      <form action="#">
+      <form onSubmit={onSubmit}>
         <Input
           value={channelUrl}
           placeholder="Enter channel url"
           onChange={onValueChange}
+          onSubmit={onSubmit}
         />
-        <Button onClick={onAddChannel}>Add</Button>
+        <Button type="submit">Add</Button>
         <ErrorMessage>{errorMsg ? errorMsg : undefined}</ErrorMessage>
       </form>
     </Container>
@@ -57,7 +60,7 @@ const Input = styled.input`
   box-sizing: border-box;
 `;
 
-const Button = styled.button.attrs({ type: 'submit' })`
+const Button = styled.button`
   height: 40px;
   width: 90px;
   margin-left: 5px;
