@@ -40,7 +40,7 @@ const Home = () => {
 export default Home;
 
 const ChannelContainer = styled.div`
-  padding: 10px;
+  padding-top: 30px;
 `;
 
 const VideosContainer = styled.div`

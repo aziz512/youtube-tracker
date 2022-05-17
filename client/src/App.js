@@ -1,16 +1,17 @@
 import styled from 'styled-components';
 import Home from './components/Home';
+import Navbar from './components/Navbar';
 
 const App = () => {
   return (
     <Content>
-      <Home></Home>
+      <Navbar />
+      <Home />
     </Content>
   );
 };
 
 export default App;
-
 
 const Content = styled.div`
   width: 80%;
