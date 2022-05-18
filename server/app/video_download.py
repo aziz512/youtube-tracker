@@ -1,5 +1,4 @@
 import asyncio
-from email.policy import default
 import os
 import re
 from yt_dlp import YoutubeDL
