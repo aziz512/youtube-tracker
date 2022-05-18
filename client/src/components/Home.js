@@ -1,20 +1,34 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { HOST } from '../common';
+import AddChannel from './AddChannel';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch('http://127.0.0.1:5000/videos').then(
-        (res) => res.json()
+      const receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
+        res.json()
       );
       setChannels(receivedChannels);
     })();
   }, []);
 
+  const onChannelAdded = (channelData) => {
+    // avoid adding undefined values and duplicates
+    if (
+      channelData &&
+      !channels.some(({ channel: { id } }) => id === channelData.channel.id)
+    ) {
+      setChannels([...channels, channelData]);
+    }
+  };
+
   return (
     <>
+      <AddChannel onChannelAdded={onChannelAdded} />
+
       {channels.map(({ channel: { name, id }, videos }) => (
         <ChannelContainer key={id}>
           <h3>{name}</h3>
