@@ -62,25 +62,15 @@ def add_routes(app):
 		watchlist.write()
 		return '', 200 # ok
 	
-	download_percentage = 0
+	dv = DownloadVideo()
 	@app.route('/download-video', methods=['GET', 'POST'])
 	async def download_video():
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: # yt vids are 11 chars
 			return 'invalid video id', 400
 
-		def download_hook(d):
-			if(d['status'] == 'downloading'):
-				nonlocal download_percentage
-				download_percentage = round(float(d['downloaded_bytes'])/float(d['total_bytes']) * 100, 2)
-
-		ydl_opts = {
-			'format': 'mp4/bestaudio/best',
-			'outtmpl': './downloadedvideos/%(id)s.%(ext)s',
-			'progress_hooks': [download_hook]
-		}
-		download_video = DownloadVideo(ydl_opts)
-		download_status = await download_video.download_video(video_id)
+		# download_video = DownloadVideo()
+		download_status = await dv.download_video(video_id)
 		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
 
 	@app.route('/download-status', methods=['GET', 'POST'])
@@ -88,6 +78,6 @@ def add_routes(app):
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: 
 			return 'invalid video id', 400
-		return jsonify(DownloadVideo().download_status(video_id, download_percentage))
+		return jsonify(dv.download_status(video_id))
 		
 
