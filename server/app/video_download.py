@@ -6,12 +6,13 @@ from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
 
 
+download_percentage = {}
+
 class DownloadVideo:
 	def __init__(self, opts=None):
-		self.download_percentage = {}
 		def download_hook(d):
 			if(d['status'] == 'downloading'):
-				self.download_percentage[self.id] = round(float(d['downloaded_bytes'])/float(d['total_bytes']) * 100, 2)
+				download_percentage[self.id] = round(float(d['downloaded_bytes'])/float(d['total_bytes']) * 100, 2)
 
 		default_ydl_opts = {
 			'format': 'mp4/bestaudio/best',
@@ -37,7 +38,7 @@ class DownloadVideo:
 		try:
 			downloaded = os.listdir('./downloadedvideos')
 			if filename+".part" in downloaded:
-				res = { "status": "downloading", "download_percentage": self.download_percentage[id] }
+				res = { "status": "downloading", "download_percentage": download_percentage[id] }
 			elif filename in downloaded:
 				res = { "status": "downloaded", "filename": filename}
 		except FileNotFoundError as err:

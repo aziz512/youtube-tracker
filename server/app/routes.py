@@ -62,15 +62,14 @@ def add_routes(app):
 		watchlist.write()
 		return '', 200 # ok
 	
-	dv = DownloadVideo()
 	@app.route('/download-video', methods=['GET', 'POST'])
 	async def download_video():
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: # yt vids are 11 chars
 			return 'invalid video id', 400
 
-		# download_video = DownloadVideo()
-		download_status = await dv.download_video(video_id)
+		download_video = DownloadVideo()
+		download_status = await download_video.download_video(video_id)
 		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
 
 	@app.route('/download-status', methods=['GET', 'POST'])
@@ -78,6 +77,6 @@ def add_routes(app):
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: 
 			return 'invalid video id', 400
-		return jsonify(dv.download_status(video_id))
+		return jsonify(DownloadVideo().download_status(video_id))
 		
 
