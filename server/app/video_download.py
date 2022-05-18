@@ -24,7 +24,7 @@ class DownloadVideo:
 				return "DownloadError"
 		return "Done"
 	
-	def download_status(self, id):
+	def download_status(self, id, download_percentage):
 		ydl_opts = self.ydl_opts
 		URL = f'https://www.youtube.com/watch?v={id}'
 		res = { "status": "not_found" }
@@ -33,8 +33,10 @@ class DownloadVideo:
 			filename = info['id'] + ".mp4"
 			try:
 				downloaded = os.listdir('./downloadedvideos')
-				if filename in downloaded:
-					res = { "status": "downloaded", "filename": filename }
+				if filename+".part" in downloaded:
+					res = { "status": "downloading", "download_percentage": download_percentage }
+				elif filename in downloaded:
+					res = { "status": "downloaded", "filename": filename}
 			except FileNotFoundError as err:
 				pass
 		return res
