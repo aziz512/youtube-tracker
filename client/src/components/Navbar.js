@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import Dropdown from './DropdownMenu/Dropdown';
 
 const people = [
-  { name: 'Edmon Wong', link: 'https://github.com/Edmond120' },
+  { name: 'Edmond Wong', link: 'https://github.com/Edmond120' },
   { name: 'Aziz Yokubjonov', link: 'https://github.com/aziz512' },
-  { name: 'Haitham Alnajar', link: 'https://www.google.com' },
+  { name: 'Haitham Alnajar', link: 'https://github.com/infinitly-irrational' },
   { name: 'Yankang (Kyle) Xue', link: 'https://github.com/KanG98' },
-  { name: 'Kamille Tipan', link: 'https://github.com/aziz512/youtube-tracker' },
+  { name: 'Kamille Tipan', link: 'https://github.com/kamamile-tea' },
 ];
 
 const Navbar = () => {
@@ -17,12 +17,12 @@ const Navbar = () => {
         Video<span>Tube</span>
       </Logo>
       <Menu>
-        <Dropdown people={people}></Dropdown>
+        <Dropdown people={people} />
         <MenuLink
           href="https://github.com/aziz512/youtube-tracker"
           target="_blank"
         >
-          Our Work
+          Source Code
         </MenuLink>
       </Menu>
     </Nav>
@@ -36,11 +36,12 @@ const MenuLink = styled.a`
   cursor: pointer;
   text-align: center;
   text-decoration: none;
-  color: #67bc98;
+  color: #7b7fda;
   transition: all 0.3s ease-in;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: 500;
   &:hover {
-    color: #7b7fda;
+    color: #67bc98;
   }
 `;
 
@@ -51,7 +52,6 @@ const Nav = styled.div`
   align-items: center;
   flex-wrap: wrap;
   background: white;
-  position: absolute;
   top: 0;
   left: 0;
   right: 0;

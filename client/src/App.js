@@ -4,10 +4,12 @@ import Navbar from './components/Navbar';
 
 const App = () => {
   return (
-    <Content>
+    <>
       <Navbar />
-      <Home />
-    </Content>
+      <Content>
+        <Home />
+      </Content>
+    </>
   );
 };
 

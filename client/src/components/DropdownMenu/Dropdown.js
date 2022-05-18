@@ -3,14 +3,14 @@ import './DropdownStyles.css';
 
 const Dropdown = ({ people }) => {
   return (
-    <div class="dropdown">
-      <div href="#" class="dropbtn">
+    <div className="dropdown">
+      <div href="#" className="dropbtn">
         Contact
       </div>
-      <div class="dropdown-content">
-        {people.map((person) => {
+      <div className="dropdown-content">
+        {people.map((person, index) => {
           return (
-            <li>
+            <li key={index}>
               <a href={person.link} target="_blank" rel="noreferrer">
                 {person.name}
               </a>
