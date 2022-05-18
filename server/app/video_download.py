@@ -1,11 +1,18 @@
 import asyncio
+import os
 import re
 from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
 
 class DownloadVideo:
-	def __init__(self, opts):
-		self.ydl_opts = opts
+	def __init__(self, opts=None):
+		default_ydl_opts = {
+			'format': 'mp4/bestaudio/best',
+			'outtmpl': './downloadedvideos/%(title)s.%(ext)s',
+		}
+		self.ydl_opts = opts if opts is not None else default_ydl_opts
+
+
 
 	async def download_video(self, id):
 		URL = f'https://www.youtube.com/watch?v={id}'
@@ -16,6 +23,22 @@ class DownloadVideo:
 			except DownloadError:
 				return "DownloadError"
 		return "Done"
+	
+	def download_status(self, id):
+		ydl_opts = self.ydl_opts
+		URL = f'https://www.youtube.com/watch?v={id}'
+		res = { "status": "not_found" }
+		with YoutubeDL(ydl_opts) as ydl:
+			info = ydl.extract_info(URL, download=False, process=False)
+			filename = info['id'] + ".mp4"
+			try:
+				downloaded = os.listdir('./downloadedvideos')
+				if filename in downloaded:
+					res = { "status": "downloaded", "filename": filename }
+			except FileNotFoundError as err:
+				pass
+		return res
+
 
 class Extractor:
 	def __init__(self, regex, group_names):
