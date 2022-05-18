@@ -54,6 +54,7 @@ const Home = () => {
 export default Home;
 
 const ChannelContainer = styled.div`
+  // padding-top: 30px;
   padding: 10px;
 `;
 
