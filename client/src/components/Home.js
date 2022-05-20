@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import DeleteButton from './DeleteButton';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
+  const [isSubscribed, setIsSubscribed] = useState();
 
   useEffect(() => {
     (async () => {
@@ -11,16 +13,24 @@ const Home = () => {
       );
       setChannels(receivedChannels);
     })();
-  }, []);
+  }, [isSubscribed]);
 
   return (
     <>
       {channels.map(({ channel: { name, id }, videos }) => (
         <ChannelContainer key={id}>
-          <h3>{name}</h3>
+          <Channel>
+            <h3>{name}</h3>
+            <DeleteButton
+              name={name}
+              id={id}
+              isSubscribed={isSubscribed}
+              setIsSubscribed={setIsSubscribed}
+            />
+          </Channel>
           <VideosContainer>
             {videos.map((video) => (
-              <VideoItem>
+              <VideoItem key={video.id}>
                 <LinkWrapper
                   href={'https://www.youtube.com/watch?v=' + video.id}
                   target="_blank"
@@ -68,4 +78,11 @@ const LinkWrapper = styled.a`
     color: black;
     text-decoration: none;
   }
+`;
+
+const Channel = styled.div`
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
 `;
