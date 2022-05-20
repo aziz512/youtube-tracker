@@ -47,11 +47,6 @@ from .watchlist import Watchlist
 from . import rss
 from .video_download import DownloadVideo, url_to_video_id, async_extract_info
 
-def _copy_values(target, source, keys):
-	for key in keys:
-		if key in source:
-			target[key] = source[key]
-
 def add_routes(app):
 	@app.route('/hello_world')
 	def hello_world():
@@ -84,7 +79,7 @@ def add_routes(app):
 
 		args = {}
 		if 'id' in json:
-			_copy_values(args, json, ('id', 'source', 'site', 'name'))
+			args['id'] = json['id']
 		if 'url' in json:
 			id = await url_to_video_id(json['url'])
 			if id is None: #pragma: nocover
