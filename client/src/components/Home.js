@@ -10,7 +10,7 @@ import DownloadControls, {
 } from './DownloadControls';
 
 const Home = () => {
-  let [channels, setChannels] = useState([]);
+  const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -61,9 +61,9 @@ const Home = () => {
 
   const removeChannel = (channelId) => {
     setChannels(
-      (channels = channels.filter((element) => {
+      channels.filter((element) => {
         return element.channel.id !== channelId;
-      }))
+      })
     );
   };
 
