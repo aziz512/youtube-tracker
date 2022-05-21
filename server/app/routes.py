@@ -42,7 +42,7 @@ POST, DELETE /watchlist
 """
 
 import asyncio
-from flask import jsonify, request
+from flask import jsonify, request, send_from_directory
 from .watchlist import Watchlist
 from . import rss
 from .video_download import DownloadVideo, url_to_video_id, async_extract_info
@@ -113,7 +113,7 @@ def add_routes(app):
 
 		download_video = DownloadVideo()
 		download_status = await download_video.download_video(video_id)
-		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
+		return (download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
 
 	@app.route('/download-status', methods=['GET', 'POST'])
 	async def download_status():
@@ -121,5 +121,10 @@ def add_routes(app):
 		if len(video_id) != 11: 
 			return 'invalid video id', 400
 		return jsonify(DownloadVideo().download_status(video_id))
-		
+	
+	@app.route('/downloads/<path:name>')
+	def serve_video(name):
+		return send_from_directory(
+			'../downloadedvideos', name, as_attachment=False
+		)
 

@@ -2,15 +2,30 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { HOST } from '../common';
 import AddChannel from './AddChannel';
+import DownloadControls from './DownloadControls';
+
+export const DOWNLOADED = 'downloaded';
+export const DOWNLOADING = 'downloading';
+export const NOT_DOWNLOADING = 'not_found';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
+      let receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
         res.json()
       );
+
+      // in-progress video downloads should reset on page refreshes
+      receivedChannels.forEach((channel) => {
+        channel.videos.forEach((videoDatum) => {
+          videoDatum.download_status =
+            videoDatum.download_status === DOWNLOADING
+              ? NOT_DOWNLOADING
+              : videoDatum.download_status;
+        });
+      });
       setChannels(receivedChannels);
     })();
   }, []);
@@ -23,6 +38,22 @@ const Home = () => {
     ) {
       setChannels([...channels, channelData]);
     }
+  };
+
+  const onVideoDownload = (video) => {
+    const newChannels = updateVideoObj(channels, video.id, {
+      ...video,
+      download_status: DOWNLOADING,
+    });
+    setChannels(newChannels);
+
+    fetch(`${HOST}/download-video?videoid=${video.id}`).then((resp) => {
+      const newChannels = updateVideoObj(channels, video.id, {
+        ...video,
+        download_status: resp.ok ? DOWNLOADED : NOT_DOWNLOADING,
+      });
+      setChannels(newChannels);
+    });
   };
 
   return (
@@ -42,6 +73,10 @@ const Home = () => {
                   <Thumbnail src={video.thumbnail} />
                   <span>{video.title}</span>
                 </LinkWrapper>
+                <DownloadControls
+                  video={video}
+                  onDownload={() => onVideoDownload(video)}
+                ></DownloadControls>
               </VideoItem>
             ))}
           </VideosContainer>
@@ -84,3 +119,17 @@ const LinkWrapper = styled.a`
     text-decoration: none;
   }
 `;
+/* Accepts a channels array and returns a copy of it with given video object updated */
+const updateVideoObj = (channels, videoId, newValue) => {
+  return channels.map((channel) => {
+    return {
+      ...channel,
+      videos: channel.videos.map((video) => {
+        if (video.id === videoId) {
+          return { ...newValue };
+        }
+        return video;
+      }),
+    };
+  });
+};

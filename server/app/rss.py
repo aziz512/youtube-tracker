@@ -1,4 +1,5 @@
 import feedparser
+from .video_download import DownloadVideo
 from .watchlist import Watchlist
 from .watchlist import unpack_entry
 from .watchlist import url_formats
@@ -99,6 +100,8 @@ def summarize_entry(entry, raise_error=False):
 			('thumbnail', ('media_thumbnail', 0, 'url'), True), #optional
 		)
 		_reword(summary, entry, mapping)
+		
+		summary['download_status'] = DownloadVideo().download_status(summary['id'])['status']
 	except ValueError as e: #pragma: nocover
 		if raise_error:
 			raise e
