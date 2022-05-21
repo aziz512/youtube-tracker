@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { HOST } from '../common';
 import AddChannel from './AddChannel';
-import DownloadControls, { DOWNLOADING, NOT_DOWNLOADING, DOWNLOADED } from './DownloadControls';
+import DeleteButton from './DeleteButton';
+import DownloadControls, {
+  DOWNLOADING,
+  NOT_DOWNLOADING,
+  DOWNLOADED,
+} from './DownloadControls';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);
@@ -36,6 +41,32 @@ const Home = () => {
     }
   };
 
+  const handleDeleteRequest = async (id) => {
+    try {
+      const resp = await fetch(`${HOST}/watchlist`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (resp.ok) {
+        removeChannel(id);
+      }
+    } catch (e) {
+      console.log(e, 'Failed to delete channel');
+    }
+  };
+
+  const removeChannel = (channelId) => {
+    setChannels(
+      channels.filter((element) => {
+        return element.channel.id !== channelId;
+      })
+    );
+  };
+
   const onVideoDownload = (video) => {
     const newChannels = updateVideoObj(channels, video.id, {
       ...video,
@@ -58,10 +89,17 @@ const Home = () => {
 
       {channels.map(({ channel: { name, id }, videos }) => (
         <ChannelContainer key={id}>
-          <h3>{name}</h3>
+          <Channel>
+            <h3>{name}</h3>
+            <DeleteButton
+              handleDeleteRequest={() => {
+                handleDeleteRequest(id);
+              }}
+            />
+          </Channel>
           <VideosContainer>
             {videos.map((video) => (
-              <VideoItem>
+              <VideoItem key={video.id}>
                 <LinkWrapper
                   href={'https://www.youtube.com/watch?v=' + video.id}
                   target="_blank"
@@ -116,6 +154,12 @@ const LinkWrapper = styled.a`
   }
 `;
 
+const Channel = styled.div`
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  align-items: center;
+`;
 const VideoTitle = styled.span`
   display: inline-block;
   height: 45px;
