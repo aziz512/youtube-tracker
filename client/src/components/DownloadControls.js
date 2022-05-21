@@ -1,5 +1,6 @@
 import { HOST } from '../common';
 import { DOWNLOADED, DOWNLOADING, NOT_DOWNLOADING } from './Home';
+import styled from 'styled-components';
 
 const DownloadControls = ({ video: { download_status, id }, onDownload }) => {
   const getControlsByStatus = (status) => {
@@ -8,18 +9,26 @@ const DownloadControls = ({ video: { download_status, id }, onDownload }) => {
         return (
           <>
             <a href={`${HOST}/downloads/${id}.mp4`} target="_blank">
-              <button>Play</button>
+              <ActionIcon src="play.png" alt="play icon" />
             </a>
           </>
         );
       case DOWNLOADING:
-        return <>Downloading</>;
+        return (
+          <ButtonWrapper>
+            <ActionIcon src="loading.png" alt="loading icon" />
+          </ButtonWrapper>
+        );
         break;
       case NOT_DOWNLOADING:
         return (
-          <>
-            <button onClick={() => onDownload()}>D</button>
-          </>
+          <ButtonWrapper>
+            <ActionIcon
+              src="download.png"
+              alt="download icon"
+              onClick={() => onDownload()}
+            />
+          </ButtonWrapper>
         );
         break;
       default:
@@ -31,3 +40,17 @@ const DownloadControls = ({ video: { download_status, id }, onDownload }) => {
 };
 
 export default DownloadControls;
+
+const ActionIcon = styled.img`
+  width: 27px;
+  margin: 5px auto;
+  display: block;
+`;
+
+const ButtonWrapper = styled.button`
+  margin: 0 auto;
+  display: block;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;

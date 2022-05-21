@@ -71,7 +71,7 @@ const Home = () => {
                   target="_blank"
                 >
                   <Thumbnail src={video.thumbnail} />
-                  <span>{video.title}</span>
+                  <VideoTitle>{video.title}</VideoTitle>
                 </LinkWrapper>
                 <DownloadControls
                   video={video}
@@ -104,7 +104,7 @@ const VideoItem = styled.div`
   display: inline-block;
   vertical-align: top;
   white-space: break-spaces;
-  margin: 0 10px 0 0;
+  margin: 0 10px 10px 0;
   width: 220px;
 `;
 
@@ -119,6 +119,13 @@ const LinkWrapper = styled.a`
     text-decoration: none;
   }
 `;
+
+const VideoTitle = styled.span`
+  display: inline-block;
+  height: 45px;
+  overflow: hidden;
+`;
+
 /* Accepts a channels array and returns a copy of it with given video object updated */
 const updateVideoObj = (channels, videoId, newValue) => {
   return channels.map((channel) => {
