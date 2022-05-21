@@ -3,6 +3,11 @@ import styled from 'styled-components';
 import { HOST } from '../common';
 import AddChannel from './AddChannel';
 import DeleteButton from './DeleteButton';
+import DownloadControls, {
+  DOWNLOADING,
+  NOT_DOWNLOADING,
+  DOWNLOADED,
+} from './DownloadControls';
 
 const Home = () => {
   let [channels, setChannels] = useState([]);
@@ -10,9 +15,19 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
+      let receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
         res.json()
       );
+
+      // in-progress video downloads should reset on page refreshes
+      receivedChannels.forEach((channel) => {
+        channel.videos.forEach((videoDatum) => {
+          videoDatum.download_status =
+            videoDatum.download_status === DOWNLOADING
+              ? NOT_DOWNLOADING
+              : videoDatum.download_status;
+        });
+      });
       setChannels(receivedChannels);
     })();
   }, [isSubscribed]);
@@ -26,8 +41,7 @@ const Home = () => {
       setChannels([...channels, channelData]);
     }
   };
-
-  const handleDeleteRequest = async (id) => {
+ const handleDeleteRequest = async (id) => {
     try {
       const resp = await fetch(`${HOST}/watchlist`, {
         method: 'DELETE',
@@ -40,7 +54,6 @@ const Home = () => {
       if (resp.ok) {
         removeChannel(id);
         setIsSubscribed(!isSubscribed);
-        console.log('running');
       }
     } catch (e) {
       console.log(e, 'Failed to delete channel');
@@ -50,6 +63,25 @@ const Home = () => {
   const removeChannel = (channelId) => {
     channels = channels.filter((element) => {
       return element.id !== channelId;
+    });
+  };
+
+  const onVideoDownload = (video) => {
+    const newChannels = updateVideoObj(channels, video.id, {
+      ...video,
+      download_status: DOWNLOADING,
+    });
+    setChannels(newChannels);
+
+    fetch(`${HOST}/download-video?videoid=${video.id}`).then((resp) => {
+      const newChannels = updateVideoObj(channels, video.id, {
+        ...video,
+        download_status: resp.ok ? DOWNLOADED : NOT_DOWNLOADING,
+      });
+      setChannels(newChannels);
+    });
+  };
+
     });
   };
 
@@ -75,8 +107,12 @@ const Home = () => {
                   target="_blank"
                 >
                   <Thumbnail src={video.thumbnail} />
-                  <span>{video.title}</span>
+                  <VideoTitle>{video.title}</VideoTitle>
                 </LinkWrapper>
+                <DownloadControls
+                  video={video}
+                  onDownload={() => onVideoDownload(video)}
+                ></DownloadControls>
               </VideoItem>
             ))}
           </VideosContainer>
@@ -104,7 +140,7 @@ const VideoItem = styled.div`
   display: inline-block;
   vertical-align: top;
   white-space: break-spaces;
-  margin: 0 10px 0 0;
+  margin: 0 10px 10px 0;
   width: 220px;
 `;
 
@@ -126,3 +162,25 @@ const Channel = styled.div`
   justify-content: flex-start;
   align-items: center;
 `;
+const VideoTitle = styled.span`
+  display: inline-block;
+  height: 45px;
+  overflow: hidden;
+`;
+
+/* Accepts a channels array and returns a copy of it with given video object updated */
+const updateVideoObj = (channels, videoId, newValue) => {
+  return channels.map((channel) => {
+    return {
+      ...channel,
+      videos: channel.videos.map((video) => {
+        if (video.id === videoId) {
+          return { ...newValue };
+        }
+        return video;
+      }),
+    };
+  });
+};
+
+

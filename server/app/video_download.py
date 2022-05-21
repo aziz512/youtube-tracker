@@ -2,7 +2,6 @@ import asyncio
 import os
 import re
 from yt_dlp import YoutubeDL
-from yt_dlp.utils import DownloadError
 
 
 download_percentage = {}
@@ -27,7 +26,7 @@ class DownloadVideo:
 		with YoutubeDL(ydl_opts) as ydl:
 			try:
 				await asyncio.to_thread(lambda: ydl.download([URL]))
-			except DownloadError:
+			except:
 				return "DownloadError"
 		return "Done"
 	
@@ -36,10 +35,10 @@ class DownloadVideo:
 		filename = id + ".mp4"
 		try:
 			downloaded = os.listdir('./downloadedvideos')
-			if filename+".part" in downloaded:
-				res = { "status": "downloading", "download_percentage": download_percentage[id] }
-			elif filename in downloaded:
+			if filename in downloaded:
 				res = { "status": "downloaded", "filename": filename}
+			elif id in download_percentage:
+				res = { "status": "downloading", "download_percentage": download_percentage[id] }
 		except FileNotFoundError as err:
 			pass
 		return res
@@ -112,7 +111,7 @@ def extract_info(url, opts=None, process=False):
 	with YoutubeDL(opts) as ydl:
 		try:
 			info = ydl.extract_info(url, download=False, process=False)
-		except DownloadError: #pragma: nocover
+		except: #pragma: nocover
 			return None
 		return info
 	return None #pragma: nocover
