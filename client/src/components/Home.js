@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { HOST } from '../common';
 import AddChannel from './AddChannel';
-import DownloadControls from './DownloadControls';
-
-export const DOWNLOADED = 'downloaded';
-export const DOWNLOADING = 'downloading';
-export const NOT_DOWNLOADING = 'not_found';
+import DownloadControls, { DOWNLOADING, NOT_DOWNLOADING, DOWNLOADED } from './DownloadControls';
 
 const Home = () => {
   const [channels, setChannels] = useState([]);

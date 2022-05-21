@@ -1,6 +1,9 @@
 import { HOST } from '../common';
-import { DOWNLOADED, DOWNLOADING, NOT_DOWNLOADING } from './Home';
 import styled from 'styled-components';
+
+export const DOWNLOADED = 'downloaded';
+export const DOWNLOADING = 'downloading';
+export const NOT_DOWNLOADING = 'not_found';
 
 const DownloadControls = ({ video: { download_status, id }, onDownload }) => {
   const getControlsByStatus = (status) => {
