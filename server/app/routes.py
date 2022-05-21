@@ -113,7 +113,7 @@ def add_routes(app):
 
 		download_video = DownloadVideo()
 		download_status = await download_video.download_video(video_id)
-		return jsonify(download_status), 400 if download_status == 'DownloadError' else jsonify('', 200)
+		return (jsonify(download_status), 400) if download_status == 'DownloadError' else (jsonify(''), 200)
 
 	@app.route('/download-status', methods=['GET', 'POST'])
 	async def download_status():
