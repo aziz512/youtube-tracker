@@ -8,7 +8,9 @@ const people = [
   { name: 'Haitham Alnajar', link: 'https://github.com/infinitly-irrational' },
   { name: 'Yankang (Kyle) Xue', link: 'https://github.com/KanG98' },
   { name: 'Kamille Tipan', link: 'https://github.com/kamamile-tea' },
+  { name: 'Karim Porgo', link: 'https://github.com/porgokarim1' },
 ];
+
 
 const Navbar = () => {
   return (
