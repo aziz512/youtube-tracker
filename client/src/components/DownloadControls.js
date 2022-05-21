@@ -35,7 +35,7 @@ const DownloadControls = ({ video: { download_status, id }, onDownload }) => {
         );
         break;
       default:
-        break;
+        return <></>;
     }
   };
 
