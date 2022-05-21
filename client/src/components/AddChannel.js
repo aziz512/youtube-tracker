@@ -64,6 +64,8 @@ const Button = styled.button`
   height: 40px;
   width: 90px;
   margin-left: 5px;
+  background-color: #764ABD;
+  color:white;
 `;
 
 const ErrorMessage = styled.span`
