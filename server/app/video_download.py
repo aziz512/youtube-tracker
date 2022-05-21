@@ -1,13 +1,27 @@
 import asyncio
+import os
 import re
 from yt_dlp import YoutubeDL
 from yt_dlp.utils import DownloadError
 
+
+download_percentage = {}
+
 class DownloadVideo:
-	def __init__(self, opts):
-		self.ydl_opts = opts
+	def __init__(self, opts=None):
+		def download_hook(d):
+			if(d['status'] == 'downloading'):
+				download_percentage[self.id] = round(float(d['downloaded_bytes'])/float(d['total_bytes']) * 100, 2)
+
+		default_ydl_opts = {
+			'format': 'mp4/bestaudio/best',
+			'outtmpl': './downloadedvideos/%(id)s.%(ext)s',
+			'progress_hooks': [download_hook]
+		}
+		self.ydl_opts = opts if opts is not None else default_ydl_opts
 
 	async def download_video(self, id):
+		self.id = id
 		URL = f'https://www.youtube.com/watch?v={id}'
 		ydl_opts = self.ydl_opts
 		with YoutubeDL(ydl_opts) as ydl:
@@ -16,6 +30,20 @@ class DownloadVideo:
 			except DownloadError:
 				return "DownloadError"
 		return "Done"
+	
+	def download_status(self, id):
+		res = { "status": "not_found" }
+		filename = id + ".mp4"
+		try:
+			downloaded = os.listdir('./downloadedvideos')
+			if filename+".part" in downloaded:
+				res = { "status": "downloading", "download_percentage": download_percentage[id] }
+			elif filename in downloaded:
+				res = { "status": "downloaded", "filename": filename}
+		except FileNotFoundError as err:
+			pass
+		return res
+
 
 class Extractor:
 	def __init__(self, regex, group_names):

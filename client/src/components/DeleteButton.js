@@ -1,30 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const DeleteButton = ({ name, id, isSubscribed, setIsSubscribed }) => {
-  const HOST = 'http://127.0.0.1:5000/';
-
-  const handleDeleteRequest = async () => {
-    try {
-      const resp = await fetch(`${HOST}/watchlist`, {
-        method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
-      }).then((res) => {
-        console.log(res);
-      });
-    } catch (e) {
-      console.log(e, 'Failed to delete channel');
-    }
-    setIsSubscribed(false);
-  };
-
+const DeleteButton = ({ handleDeleteRequest }) => {
   return (
     <Deletebutton onClick={handleDeleteRequest}>
-      <span id="x">Unsubscribe</span>
+      <span>Unsubscribe</span>
     </Deletebutton>
   );
 };

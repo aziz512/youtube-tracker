@@ -47,11 +47,6 @@ from .watchlist import Watchlist
 from . import rss
 from .video_download import DownloadVideo, url_to_video_id, async_extract_info
 
-def _copy_values(target, source, keys):
-	for key in keys:
-		if key in source:
-			target[key] = source[key]
-
 def add_routes(app):
 	@app.route('/hello_world')
 	def hello_world():
@@ -84,7 +79,7 @@ def add_routes(app):
 
 		args = {}
 		if 'id' in json:
-			_copy_values(args, json, ('id', 'source', 'site', 'name'))
+			args['id'] = json['id']
 		if 'url' in json:
 			id = await url_to_video_id(json['url'])
 			if id is None: #pragma: nocover
@@ -110,11 +105,16 @@ def add_routes(app):
 		video_id = request.args.get('videoid')
 		if len(video_id) != 11: # yt vids are 11 chars
 			return 'invalid video id', 400
-		ydl_opts = {
-			'format': 'mp4/bestaudio/best',
-			'outtmpl': './downloadedvideos/%(title)s.%(ext)s',
-		}
-		download_video = DownloadVideo(ydl_opts)
-		download_status = await download_video.download_video(video_id)
 
+		download_video = DownloadVideo()
+		download_status = await download_video.download_video(video_id)
 		return jsonify(download_status, 400) if download_status == 'DownloadError' else jsonify('', 200)
+
+	@app.route('/download-status', methods=['GET', 'POST'])
+	async def download_status():
+		video_id = request.args.get('videoid')
+		if len(video_id) != 11: 
+			return 'invalid video id', 400
+		return jsonify(DownloadVideo().download_status(video_id))
+		
+

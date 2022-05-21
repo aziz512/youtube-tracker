@@ -1,31 +1,70 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { HOST } from '../common';
+import AddChannel from './AddChannel';
 import DeleteButton from './DeleteButton';
 
 const Home = () => {
-  const [channels, setChannels] = useState([]);
+  let [channels, setChannels] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState();
 
   useEffect(() => {
     (async () => {
-      const receivedChannels = await fetch('http://127.0.0.1:5000/videos').then(
-        (res) => res.json()
+      const receivedChannels = await fetch(`${HOST}/videos`).then((res) =>
+        res.json()
       );
       setChannels(receivedChannels);
     })();
   }, [isSubscribed]);
 
+  const onChannelAdded = (channelData) => {
+    // avoid adding undefined values and duplicates
+    if (
+      channelData &&
+      !channels.some(({ channel: { id } }) => id === channelData.channel.id)
+    ) {
+      setChannels([...channels, channelData]);
+    }
+  };
+
+  const handleDeleteRequest = async (id) => {
+    try {
+      const resp = await fetch(`${HOST}/watchlist`, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      if (resp.ok) {
+        removeChannel(id);
+        setIsSubscribed(!isSubscribed);
+        console.log('running');
+      }
+    } catch (e) {
+      console.log(e, 'Failed to delete channel');
+    }
+  };
+
+  const removeChannel = (channelId) => {
+    channels = channels.filter((element) => {
+      return element.id !== channelId;
+    });
+  };
+
   return (
     <>
+      <AddChannel onChannelAdded={onChannelAdded} />
+
       {channels.map(({ channel: { name, id }, videos }) => (
         <ChannelContainer key={id}>
           <Channel>
             <h3>{name}</h3>
             <DeleteButton
-              name={name}
-              id={id}
-              isSubscribed={isSubscribed}
-              setIsSubscribed={setIsSubscribed}
+              handleDeleteRequest={() => {
+                handleDeleteRequest(id);
+              }}
             />
           </Channel>
           <VideosContainer>
@@ -50,6 +89,7 @@ const Home = () => {
 export default Home;
 
 const ChannelContainer = styled.div`
+  // padding-top: 30px;
   padding: 10px;
 `;
 

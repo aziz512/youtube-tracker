@@ -57,14 +57,11 @@ def test_modify_watchlist():
 	app = create_app(rss_watchlist=path)
 	client = app.test_client()
 
-	response = client.post('/watchlist', json={
-		'name': '3Blue1Brown',
-	})
+	response = client.post('/watchlist', json={})
 	assert response.status == '400 BAD REQUEST'
 
 	response = client.post('/watchlist', json={
 		'id': 'UCYO_jab_esuFRV4b17AJtAw',
-		'name': '3Blue1Brown',
 	})
 	assert response.status == '200 OK'
 
@@ -82,7 +79,6 @@ def test_modify_watchlist():
 
 	response = client.post('/watchlist', json={
 		'id': 'UCBR8-60-B28hp2BmDPdntcQ',
-		'name': 'Youtube',
 	})
 	assert response.status == '200 OK'
 
